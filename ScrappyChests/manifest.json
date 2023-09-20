@@ -1,0 +1,11 @@
+﻿{
+  "name": "ScrappyChests",
+  "version_number": "1.0.0",
+  "website_url": "",
+  "description": "Replaces the drops of chests and monsters to drop scrap instead of items",
+  "dependencies": [
+    "bbepis-BepInExPack-5.4.2108",
+    "RiskofThunder-HookGenPatcher-1.2.3",
+    "Risk_Of_Options-2.7.0"
+  ]
+}
