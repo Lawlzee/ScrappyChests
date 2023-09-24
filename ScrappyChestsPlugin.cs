@@ -26,19 +26,18 @@ namespace ScrappyChests
         public static ConfigEntry<bool> ReplaceMultiShopDropTable;
         public static ConfigEntry<bool> ReplaceAdaptiveChestDropTable;
         public static ConfigEntry<bool> ReplaceChanceShrineDropTable;
+        public static ConfigEntry<bool> ReplaceLockboxDropTable;
+        public static ConfigEntry<bool> ReplaceCrashedMultishopDropTable;
         public static ConfigEntry<bool> ReplaceLegendaryChestDropTable;
         public static ConfigEntry<bool> ReplaceVoidPotentialDropTable;
         public static ConfigEntry<bool> ReplaceLunarPodDropTable;
         public static ConfigEntry<bool> ReplaceLunarBudsDropTable;
 
         public static ConfigEntry<bool> ReplaceBossDropTable;
+        public static ConfigEntry<bool> ReplaceBossHunterDropTable;
         public static ConfigEntry<bool> ReplaceAWUDropTable;
         public static ConfigEntry<bool> ReplaceScavengerDropTable;
         public static ConfigEntry<bool> ReplaceElderLemurianDropTable;
-
-        public static ConfigEntry<bool> ReplaceLockboxDropTable;
-        public static ConfigEntry<bool> ReplaceBossHunterDropTable;
-        public static ConfigEntry<bool> ReplaceCrashedMultishopDropTable;
 
         public static ConfigEntry<bool> ReplaceDoppelgangerDropTable;
         public static ConfigEntry<bool> ReplaceSacrificeArtifactDropTable;
@@ -61,15 +60,14 @@ namespace ScrappyChests
             On.RoR2.ShopTerminalBehavior.GenerateNewPickupServer_bool += ShopTerminalBehavior_GenerateNewPickupServer_bool;
             On.RoR2.RouletteChestController.GenerateEntriesServer += RouletteChestController_GenerateEntriesServer;
             On.RoR2.ShrineChanceBehavior.AddShrineStack += ShrineChanceBehavior_AddShrineStack;
+            On.RoR2.FreeChestDropTable.GenerateDropPreReplacement += FreeChestDropTable_GenerateDropPreReplacement;
             On.RoR2.OptionChestBehavior.Roll += OptionChestBehavior_Roll;
 
             On.RoR2.BossGroup.DropRewards += BossGroup_DropRewards;
+            On.RoR2.EquipmentSlot.FireBossHunter += EquipmentSlot_FireBossHunter;
             On.EntityStates.ScavBackpack.Opening.FixedUpdate += Opening_FixedUpdate;
             On.RoR2.MasterDropDroplet.DropItems += MasterDropDroplet_DropItems;
             On.RoR2.ChestBehavior.RollItem += ChestBehavior_RollItem;
-
-            On.RoR2.EquipmentSlot.FireBossHunter += EquipmentSlot_FireBossHunter;
-            On.RoR2.FreeChestDropTable.GenerateDropPreReplacement += FreeChestDropTable_GenerateDropPreReplacement;
 
             On.RoR2.DoppelgangerDropTable.GenerateDropPreReplacement += DoppelgangerDropTable_GenerateDropPreReplacement;
             On.RoR2.Artifacts.SacrificeArtifactManager.OnServerCharacterDeath += SacrificeArtifactManager_OnServerCharacterDeath;
@@ -83,19 +81,18 @@ namespace ScrappyChests
             ReplaceMultiShopDropTable = Config.Bind<bool>("Chests", "Multishop Terminal", true, "Multishop Terminal will drop scrap instead of items");
             ReplaceAdaptiveChestDropTable = Config.Bind<bool>("Chests", "Adaptive Chest", true, "Adaptive Chest will drop scrap instead of items");
             ReplaceChanceShrineDropTable = Config.Bind<bool>("Chests", "Shrine of Chance", true, "Shrine of Chance will drop scrap instead of items");
-            ReplaceLegendaryChestDropTable = Config.Bind<bool>("Chests", "Legendary chest", true, "Legendary Chest will drop scrap instead of items");
+            ReplaceLegendaryChestDropTable = Config.Bind<bool>("Chests", "Legendary Chest", true, "Legendary Chest will drop scrap instead of items");
+            ReplaceLockboxDropTable = Config.Bind<bool>("Items", "Rusted Key", false, "Lockboxs will drop scrap instead of items");
+            ReplaceCrashedMultishopDropTable = Config.Bind<bool>("Items", "Crashed Multishop", false, "Crashed Multishop will drop scrap instead of items");
             ReplaceVoidPotentialDropTable = Config.Bind<bool>("Chests", "Void Potential", true, "Void Potential will drop scrap instead of items");
             ReplaceLunarPodDropTable = Config.Bind<bool>("Chests", "Lunar Pod", false, "Lunar Pod will drop Beads of Fealty instead of items");
             ReplaceLunarBudsDropTable = Config.Bind<bool>("Chests", "Lunar Bud", false, "Lunar Bud in the Bazaar Between Time will always sell Beads of Fealty");
 
             ReplaceBossDropTable = Config.Bind<bool>("Mobs", "Boss", true, "Defeating a Boss will drop scrap instead of items");
+            ReplaceBossHunterDropTable = Config.Bind<bool>("Mobs", "Trophy Hunters Tricorn", false, "Trophy Hunter's Tricorn will drop scrap instead of items");
             ReplaceAWUDropTable = Config.Bind<bool>("Mobs", "Alloy Worship Unit", true, "Alloy Worship Unit will drop scrap instead of items");
             ReplaceScavengerDropTable = Config.Bind<bool>("Mobs", "Scavenger", false, "Scavenger will drop scrap instead of items");
             ReplaceElderLemurianDropTable = Config.Bind<bool>("Mobs", "Elite Elder Lemurian", false, "The Elite Elder Lemurian in the hidden chamber of Abandoned Aqueduct will drop scrap instead of bands");
-
-            ReplaceLockboxDropTable = Config.Bind<bool>("Items", "Rusted Key", false, "Lockboxs will drop scrap instead of items");
-            ReplaceBossHunterDropTable = Config.Bind<bool>("Items", "Trophy Hunters Tricorn", false, "Trophy Hunter's Tricorn will drop scrap instead of items");
-            ReplaceCrashedMultishopDropTable = Config.Bind<bool>("Items", "Crashed Multishop", false, "Crashed Multishop will drop scrap instead of items");
 
             ReplaceDoppelgangerDropTable = Config.Bind<bool>("Artifacts", "Relentless Doppelganger", false, "The Relentless Doppelganger from the Artifact of Vengeance will drop scrap instead of items");
             ReplaceSacrificeArtifactDropTable = Config.Bind<bool>("Artifacts", "Artifact of Sacrifice", true, "When using the Artifact of Sacrifice, the mobs will drop scrap instead of items");
@@ -115,19 +112,18 @@ namespace ScrappyChests
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceMultiShopDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceAdaptiveChestDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceChanceShrineDropTable));
+            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLockboxDropTable));
+            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceCrashedMultishopDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLegendaryChestDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceVoidPotentialDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLunarPodDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLunarBudsDropTable));
 
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceBossDropTable));
+            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceBossHunterDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceAWUDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceScavengerDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceElderLemurianDropTable));
-
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLockboxDropTable));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceBossHunterDropTable));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceCrashedMultishopDropTable));
 
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceDoppelgangerDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceSacrificeArtifactDropTable));
