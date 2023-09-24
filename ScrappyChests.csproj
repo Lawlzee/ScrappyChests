@@ -75,7 +75,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="../CHANGELOG.md">
+    <Content Include="CHANGELOG.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Update="icon.png">
@@ -84,7 +84,7 @@
     <None Update="manifest.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Content Include="../README.md">
+    <Content Include="README.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
