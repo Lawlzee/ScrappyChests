@@ -1,10 +1,10 @@
 # ScrappyChests
 
-![icon](icon.png)
-
 ScrappyChests is a Risk of Rain 2 mod that replaces the drops of chests and mobs to drop scrap instead of items. The player has to use printers to find regular items.
 
 ## Installation
+
+[https://thunderstore.io/package/Lawlzee/ScrappyChests/](https://thunderstore.io/package/Lawlzee/ScrappyChests/)
 
 ## Features
 

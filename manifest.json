@@ -1,11 +1,12 @@
 ﻿{
   "name": "ScrappyChests",
   "version_number": "1.0.0",
-  "website_url": "",
-  "description": "Replaces the drops of chests and monsters to drop scrap instead of items",
+  "website_url": "https://github.com/Lawlzee/ScrappyChests",
+  "displayName": "Scrappy Chests",
+  "description": "ScrappyChests is a Risk of Rain 2 mod that replaces the drops of chests and mobs to drop scrap instead of items. The player has to use printers to find regular items.",
   "dependencies": [
     "bbepis-BepInExPack-5.4.2108",
     "RiskofThunder-HookGenPatcher-1.2.3",
-    "Risk_Of_Options-2.7.0"
+    "Rune580-Risk_Of_Options-2.7.0"
   ]
 }

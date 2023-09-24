@@ -5,6 +5,9 @@
     <LangVersion>preview</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <OutDir Condition="'$(Configuration)' == 'Debug'">C:\Users\Lawlzee\AppData\Roaming\r2modmanPlus-local\RiskOfRain2\profiles\ModDev\BepInEx\plugins\ScrappyChests</OutDir>
+    <OutDir Condition="'$(Configuration)' == 'Release'">bin/Release/ScrappyChests</OutDir>
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>None</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
