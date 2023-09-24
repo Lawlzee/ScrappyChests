@@ -38,6 +38,11 @@ namespace ScrappyChests
         public static ConfigEntry<bool> ReplaceSimulacrumOrbDropTable;
         public static ConfigEntry<bool> ReplaceVoidFieldsOrbDropTable;
         //todo: legendaryChest
+        //todo: lockboc
+        //todo: white
+        //todo: green
+        //todo: yellow
+        //todo: red
 
         public void Awake()
         {
@@ -161,51 +166,9 @@ namespace ScrappyChests
                     Log.Info($"dropTable is {self.dropTable?.GetType().Name ?? "null"}");
                 }
 
-                foreach (PickupDropTable dropTable in self.bossDropTables)
+                foreach (PickupDropTable dropTable in self.bossDropTables.Distinct())
                 {
-                    if (dropTable is ExplicitPickupDropTable explicitPickupDropTable)
-                    {
-                        var oldPickupEntries = explicitPickupDropTable.pickupEntries;
-                        explicitPickupDropTable.pickupEntries = explicitPickupDropTable.pickupEntries.ToArray();
-
-                        disposables.Add(new Disposable(() =>
-                        {
-                            explicitPickupDropTable.pickupEntries = oldPickupEntries;
-                        }));
-
-                        for (int i = 0; i < explicitPickupDropTable.pickupEntries.Length; i++)
-                        {
-                            ref ExplicitPickupDropTable.PickupDefEntry entry = ref explicitPickupDropTable.pickupEntries[i];
-                            if (entry.pickupDef is ItemDef itemDef)
-                            {
-                                string scrapName = itemDef.tier switch
-                                {
-                                    ItemTier.Tier1 => RoR2Content.Items.ScrapWhite.name,
-                                    ItemTier.Tier2 => RoR2Content.Items.ScrapGreen.name,
-                                    ItemTier.Tier3 => RoR2Content.Items.ScrapRed.name,
-                                    ItemTier.Boss => RoR2Content.Items.ScrapYellow.name,
-                                    _ => null
-                                };
-
-                                if (scrapName != null)
-                                {
-                                    entry.pickupDef = ItemCatalog.GetItemDef(ItemCatalog.FindItemIndex(scrapName));
-                                }
-                                else
-                                {
-                                    Log.Warning($"UnExpected tier '{itemDef.tier}' for BossGroup");
-                                }
-                            }
-                            else
-                            {
-                                Log.Warning($"Expected ItemDef for BossGroup");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Log.Warning($"Expected ExplicitPickupDropTable for BossGroup");
-                    }
+                    disposables.Add(ReplaceDropTable(dropTable, nameof(BossGroup_DropRewards)));
                 }
 
                 orig(self);
