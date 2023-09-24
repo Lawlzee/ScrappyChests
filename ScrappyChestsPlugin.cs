@@ -8,17 +8,19 @@ using System.Collections.Generic;
 using System.Linq;
 using EntityStates.ScavBackpack;
 using RoR2.Artifacts;
+using UnityEngine;
+using System.IO;
 
 namespace ScrappyChests
 {
-    [BepInDependency("bubbet.zioriskofoptions")]
+    [BepInDependency("com.rune580.riskofoptions")]
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     public class ScrappyChestsPlugin : BaseUnityPlugin
     {
-        public const string PluginGUID = PluginAuthor + "." + PluginName;
+        public const string PluginGUID = "Lawlzee.ScrappyChests";
         public const string PluginAuthor = "Lawlzee";
-        public const string PluginName = "ScrappyChests";
-        public const string PluginVersion = "1.0.0";
+        public const string PluginName = "Scrappy Chests";
+        public const string PluginVersion = "1.0.1";
 
         public static ConfigEntry<bool> ModEnabled;
 
@@ -137,7 +139,15 @@ namespace ScrappyChests
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceYellowItems));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceBlueItems));
 
-            //todo: add RiskOfOptions icon
+            ModSettingsManager.SetModIcon(LoadIconSprite());
+        }
+
+        Sprite LoadIconSprite()
+        {
+            Texture2D texture = new Texture2D(2, 2); 
+            texture.LoadImage(File.ReadAllBytes(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Info.Location), "icon.png")));
+            return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+
         }
 
         private void ChestBehavior_Roll(On.RoR2.ChestBehavior.orig_Roll orig, ChestBehavior self)
