@@ -29,13 +29,15 @@ namespace ScrappyChests
         public static ConfigEntry<bool> ReplaceMultiShopDropTable;
         public static ConfigEntry<bool> ReplaceAdaptiveChestDropTable;
         public static ConfigEntry<bool> ReplaceChanceShrineDropTable;
-        public static ConfigEntry<bool> ReplaceLockboxDropTable;
-        public static ConfigEntry<bool> ReplaceCrashedMultishopDropTable;
         public static ConfigEntry<bool> ReplaceLegendaryChestDropTable;
         public static ConfigEntry<bool> ReplaceVoidPotentialDropTable;
+        public static ConfigEntry<bool> ReplaceVoidCradleDropTable;
+        public static ConfigEntry<float> PrinterSpawnMultiplier;
         public static ConfigEntry<bool> ReplaceLunarPodDropTable;
         public static ConfigEntry<bool> ReplaceLunarBudsDropTable;
-        public static ConfigEntry<float> PrinterSpawnMultiplier;
+
+        public static ConfigEntry<bool> ReplaceLockboxDropTable;
+        public static ConfigEntry<bool> ReplaceCrashedMultishopDropTable;
 
         public static ConfigEntry<bool> ReplaceBossDropTable;
         public static ConfigEntry<bool> ReplaceBossHunterDropTable;
@@ -88,12 +90,14 @@ namespace ScrappyChests
             ReplaceAdaptiveChestDropTable = Config.Bind<bool>("Chests", "Adaptive Chest", true, "Adaptive Chest will drop scrap instead of items");
             ReplaceChanceShrineDropTable = Config.Bind<bool>("Chests", "Shrine of Chance", true, "Shrine of Chance will drop scrap instead of items");
             ReplaceLegendaryChestDropTable = Config.Bind<bool>("Chests", "Legendary Chest", true, "Legendary Chest will drop scrap instead of items");
-            ReplaceLockboxDropTable = Config.Bind<bool>("Items", "Rusted Key", false, "Lockboxs will drop scrap instead of items");
-            ReplaceCrashedMultishopDropTable = Config.Bind<bool>("Items", "Crashed Multishop", false, "Crashed Multishop will drop scrap instead of items");
             ReplaceVoidPotentialDropTable = Config.Bind<bool>("Chests", "Void Potential", true, "Void Potential will drop scrap instead of items");
+            ReplaceVoidCradleDropTable = Config.Bind<bool>("Chests", "Void Cradle", false, "Void Cradle will drop scrap instead of items");
+            PrinterSpawnMultiplier = Config.Bind("Chests", "Printer spawn multiplier", 1f, "Controls the spawn rate of printers. 0.0 = never. 1.0 = default spawn rate. 2.0 = 2 times more likely to spawn printers.");
             ReplaceLunarPodDropTable = Config.Bind<bool>("Chests", "Lunar Pod", false, "Lunar Pod will drop Beads of Fealty instead of items");
             ReplaceLunarBudsDropTable = Config.Bind<bool>("Chests", "Lunar Bud", false, "Lunar Bud in the Bazaar Between Time will always sell Beads of Fealty");
-            PrinterSpawnMultiplier = Config.Bind("Chests", "Printer spawn multiplier", 1f, "Controls the spawn rate of printers. 0.0 = never. 1.0 = default spawn rate. 2.0 = 2 times more likely to spawn printers.");
+
+            ReplaceLockboxDropTable = Config.Bind<bool>("Items", "Rusted Key", false, "Lockboxs will drop scrap instead of items");
+            ReplaceCrashedMultishopDropTable = Config.Bind<bool>("Items", "Crashed Multishop", false, "Crashed Multishop will drop scrap instead of items");
 
             ReplaceBossDropTable = Config.Bind<bool>("Mobs", "Boss", true, "Defeating a Boss will drop scrap instead of items");
             ReplaceBossHunterDropTable = Config.Bind<bool>("Mobs", "Trophy Hunters Tricorn", false, "Trophy Hunter's Tricorn will drop scrap instead of items");
@@ -119,13 +123,15 @@ namespace ScrappyChests
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceMultiShopDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceAdaptiveChestDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceChanceShrineDropTable));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLockboxDropTable));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceCrashedMultishopDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLegendaryChestDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceVoidPotentialDropTable));
+            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceVoidCradleDropTable));
+            ModSettingsManager.AddOption(new StepSliderOption(PrinterSpawnMultiplier, new StepSliderConfig() { min = 0, max = 5, increment = 0.05f, formatString = "{0:0.##}" }));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLunarPodDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLunarBudsDropTable));
-            ModSettingsManager.AddOption(new SliderOption(PrinterSpawnMultiplier, new SliderConfig() { min = 0, max = 10, formatString = "{0:0.##}" }));
+
+            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLockboxDropTable));
+            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceCrashedMultishopDropTable));
 
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceBossDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceBossHunterDropTable));
@@ -500,6 +506,9 @@ namespace ScrappyChests
                         ItemTier.Tier3 => ReplaceRedItems.Value,
                         ItemTier.Boss => ReplaceYellowItems.Value,
                         ItemTier.Lunar => ReplaceBlueItems.Value,
+                        ItemTier.VoidTier1 => ReplaceVoidCradleDropTable.Value,
+                        ItemTier.VoidTier2 => ReplaceVoidCradleDropTable.Value,
+                        ItemTier.VoidTier3 => ReplaceVoidCradleDropTable.Value,
                         _ => false
                     };
 
@@ -515,6 +524,9 @@ namespace ScrappyChests
                         ItemTier.Tier3 => "ItemIndex.ScrapRed",
                         ItemTier.Boss => "ItemIndex.ScrapYellow",
                         ItemTier.Lunar => "ItemIndex.LunarTrinket",
+                        ItemTier.VoidTier1 => "ItemIndex.ScrapWhite",
+                        ItemTier.VoidTier2 => "ItemIndex.ScrapGreen",
+                        ItemTier.VoidTier3 => "ItemIndex.ScrapRed",
                         _ => throw new Exception("Unreachable")
                     };
 
