@@ -10,6 +10,7 @@ using EntityStates.ScavBackpack;
 using RoR2.Artifacts;
 using UnityEngine;
 using System.IO;
+using RiskOfOptions.OptionConfigs;
 
 namespace ScrappyChests
 {
@@ -34,6 +35,7 @@ namespace ScrappyChests
         public static ConfigEntry<bool> ReplaceVoidPotentialDropTable;
         public static ConfigEntry<bool> ReplaceLunarPodDropTable;
         public static ConfigEntry<bool> ReplaceLunarBudsDropTable;
+        public static ConfigEntry<float> PrinterSpawnMultiplier;
 
         public static ConfigEntry<bool> ReplaceBossDropTable;
         public static ConfigEntry<bool> ReplaceBossHunterDropTable;
@@ -54,6 +56,7 @@ namespace ScrappyChests
         public static ConfigEntry<bool> ReplaceBlueItems;
         //todo: hidden chest
 
+
         public void Awake()
         {
             Log.Init(Logger);
@@ -64,6 +67,7 @@ namespace ScrappyChests
             On.RoR2.ShrineChanceBehavior.AddShrineStack += ShrineChanceBehavior_AddShrineStack;
             On.RoR2.FreeChestDropTable.GenerateDropPreReplacement += FreeChestDropTable_GenerateDropPreReplacement;
             On.RoR2.OptionChestBehavior.Roll += OptionChestBehavior_Roll;
+            On.RoR2.SceneDirector.GenerateInteractableCardSelection += SceneDirector_GenerateInteractableCardSelection;
 
             On.RoR2.BossGroup.DropRewards += BossGroup_DropRewards;
             On.RoR2.EquipmentSlot.FireBossHunter += EquipmentSlot_FireBossHunter;
@@ -89,6 +93,7 @@ namespace ScrappyChests
             ReplaceVoidPotentialDropTable = Config.Bind<bool>("Chests", "Void Potential", true, "Void Potential will drop scrap instead of items");
             ReplaceLunarPodDropTable = Config.Bind<bool>("Chests", "Lunar Pod", false, "Lunar Pod will drop Beads of Fealty instead of items");
             ReplaceLunarBudsDropTable = Config.Bind<bool>("Chests", "Lunar Bud", false, "Lunar Bud in the Bazaar Between Time will always sell Beads of Fealty");
+            PrinterSpawnMultiplier = Config.Bind("Chests", "Printer spawn multiplier", 1f, "Controls the spawn rate of printers. 0.0 = never. 1.0 = default spawn rate. 2.0 = 2 times more likely to spawn printers.");
 
             ReplaceBossDropTable = Config.Bind<bool>("Mobs", "Boss", true, "Defeating a Boss will drop scrap instead of items");
             ReplaceBossHunterDropTable = Config.Bind<bool>("Mobs", "Trophy Hunters Tricorn", false, "Trophy Hunter's Tricorn will drop scrap instead of items");
@@ -120,6 +125,7 @@ namespace ScrappyChests
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceVoidPotentialDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLunarPodDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLunarBudsDropTable));
+            ModSettingsManager.AddOption(new SliderOption(PrinterSpawnMultiplier, new SliderConfig() { min = 0, max = 10, formatString = "{0:0.##}" }));
 
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceBossDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceBossHunterDropTable));
@@ -396,6 +402,24 @@ namespace ScrappyChests
             }
 
             orig(self);
+        }
+
+        private WeightedSelection<DirectorCard> SceneDirector_GenerateInteractableCardSelection(On.RoR2.SceneDirector.orig_GenerateInteractableCardSelection orig, SceneDirector self)
+        {
+            var weightedSelection = orig(self);
+            for (int i = 0; i < weightedSelection.choices.Length; i++)
+            {
+                ref WeightedSelection<DirectorCard>.ChoiceInfo choice = ref weightedSelection.choices[i];
+
+                if (choice.value != null && choice.value.spawnCard.name.StartsWith("iscDuplicator"))
+                {
+                    var oldWeigth = choice.weight;
+                    weightedSelection.ModifyChoiceWeight(i, choice.weight * PrinterSpawnMultiplier.Value);
+                    Log.Debug($"iscDuplicator weight changed from {oldWeigth} to {choice.weight}");
+                }
+            }
+
+            return weightedSelection;
         }
 
         private void InfiniteTowerWaveController_DropRewards(On.RoR2.InfiniteTowerWaveController.orig_DropRewards orig, InfiniteTowerWaveController self)
