@@ -10,34 +10,72 @@ ScrappyChests is a Risk of Rain 2 mod that substitutes the loot from chests and 
 
 Each replacement rules can be configured in the game menu `Settings > Mod Options > ScrappyChests`.
 
-|Category|Name|Default value|Description|
-|--|--|--|--|
-|Configuration|Mod enabled|Enabled|Mod enabled|
-|Chests|Chest|Enabled|Chest will drop scrap instead of items|
-|Chests|Multishop Terminal|Enabled|Multishop Terminal will drop scrap instead of items|
-|Chests|Adaptive Chest|Enabled|Adaptive Chest will drop scrap instead of items|
-|Chests|Shrine of Chance|Enabled|Shrine of Chance will drop scrap instead of items|
-|Chests|Legendary Chest|Enabled|Legendary Chest will drop scrap instead of items|
-|Chests|Void Potential|Enabled|Void Potential will drop scrap instead of items|
-|Chests|Void Cradle|Enabled|Void Cradle will drop scrap instead of items|
-|Chests|Lunar Pod|Disabled|Lunar Pod will drop Beads of Fealty instead of items|
-|Chests|Lunar Bud|Disabled|Lunar Bud in the Bazaar Between Time will always sell Beads of Fealty|
-|Printers|Printer spawn multiplier|1.5x|Controls the spawn rate of printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.|
-|Printers|Add void items to Printers|Enabled|Add void items to Printers|
-|Printers|Add void items to Cauldrons|Enabled|Add void items to Cauldrons|
-|Items|Rusted Key|Disabled|Lockboxs will drop scrap instead of items|
-|Items|Crashed Multishop|Disabled|Crashed Multishop will drop scrap instead of items|
-|Items|Trophy Hunters Tricorn|Disabled|Trophy Hunter's Tricorn will drop scrap instead of items|
-|Mobs|Boss|Enabled|Defeating a Boss will drop scrap instead of items|
-|Mobs|Alloy Worship Unit|Enabled|Alloy Worship Unit will drop scrap instead of items|
-|Mobs|Scavenger|Disabled|Scavenger will drop scrap instead of items|
-|Mobs|Elite Elder Lemurian|Disabled|The Elite Elder Lemurian in the hidden chamber of Abandoned Aqueduct will drop scrap instead of bands|
-|Artifacts|Relentless Doppelganger|Disabled|The Relentless Doppelganger from the Artifact of Vengeance will drop scrap instead of items|
-|Artifacts|Artifact of Sacrifice|Enabled|When using the Artifact of Sacrifice, the mobs will drop scrap instead of items|
-|Waves|Simulacrum|Enabled|The orb reward after each wave of Simulacrum will drop scrap instead of items|
-|Waves|Void Fields|Enabled|The orb reward after each wave of the Void Fields will drop scrap instead of items|
-|Tiers|White item|Enabled|Replace white item drops with white scrap|
-|Tiers|Green item|Enabled|Replace green item drops with green scrap|
-|Tiers|Red item|Enabled|Replace red item drops with red scrap|
-|Tiers|Yellow item|Enabled|Replace yellow item drops with yellow scrap|
-|Tiers|Blue item|Enabled|Replace blue item drops with Beads of Fealty|
+### Global Configuration
+
+| Name | Default Value | Description |
+| --- | --- | --- |
+| Mod enabled | Enabled | Mod enabled |
+
+### Chests rules
+
+| Name | Default Value | Description |
+| --- | --- | --- |
+| Chest | Enabled | Chest will drop scrap instead of items |
+| Multishop Terminal | Enabled | Multishop Terminal will drop scrap instead of items |
+| Adaptive Chest | Enabled | Adaptive Chest will drop scrap instead of items |
+| Shrine of Chance | Enabled | Shrine of Chance will drop scrap instead of items |
+| Legendary Chest | Enabled | Legendary Chest will drop scrap instead of items |
+| Void Potential | Enabled | Void Potential will drop scrap instead of items |
+| Void Cradle | Enabled | Void Cradle will drop scrap instead of items |
+| Lunar Pod | Disabled | Lunar Pod will drop Beads of Fealty instead of items |
+| Lunar Bud | Disabled | Lunar Bud in the Bazaar Between Time will always sell Beads of Fealty |
+
+### Printers rules
+
+| Name | Default Value | Description |
+| --- | --- | --- |
+| Printer spawn multiplier | 1.5x | Controls the spawn rate of printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers. |
+| Add void items to Printers | Enabled | Add void items to Printers |
+| Add void items to Cauldrons | Enabled | Add void items to Cauldrons |
+
+### Items rules
+
+| Name | Default Value | Description |
+| --- | --- | --- |
+| Rusted Key | Disabled | Lockboxes will drop scrap instead of items |
+| Crashed Multishop | Disabled | Crashed Multishop will drop scrap instead of items |
+| Trophy Hunters Tricorn | Disabled | Trophy Hunter's Tricorn will drop scrap instead of items |
+| Speed items multiplier | 1.25x | Controls the spawn rate of speed items. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn speed items. |
+
+### Mobs rules
+
+| Name | Default Value | Description |
+| --- | --- | --- |
+| Boss | Enabled | Defeating a Boss will drop scrap instead of items |
+| Alloy Worship Unit | Enabled | Alloy Worship Unit will drop scrap instead of items |
+| Scavenger | Disabled | Scavenger will drop scrap instead of items |
+| Elite Elder Lemurian | Disabled | The Elite Elder Lemurian in the hidden chamber of Abandoned Aqueduct will drop scrap instead of bands |
+
+### Artifacts rules
+
+| Name | Default Value | Description |
+| --- | --- | --- |
+| Relentless Doppelganger | Disabled | The Relentless Doppelganger from the Artifact of Vengeance will drop scrap instead of items |
+| Artifact of Sacrifice | Enabled | When using the Artifact of Sacrifice, mobs will drop scrap instead of items |
+
+### Waves rules
+
+| Name | Default Value | Description |
+| --- | --- | --- |
+| Simulacrum | Enabled | The orb reward after each wave of Simulacrum will drop scrap instead of items |
+| Void Fields | Enabled | The orb reward after each wave of the Void Fields will drop scrap instead of items |
+
+### Tiers rules
+
+| Name | Default Value | Description |
+| --- | --- | --- |
+| White item | Enabled | Replace white item drops with white scrap |
+| Green item | Enabled | Replace green item drops with green scrap |
+| Red item | Enabled | Replace red item drops with red scrap |
+| Yellow item | Enabled | Replace yellow item drops with yellow scrap |
+| Blue item | Enabled | Replace blue item drops with Beads of Fealty |

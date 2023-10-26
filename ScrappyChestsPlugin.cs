@@ -42,6 +42,7 @@ namespace ScrappyChests
         public static ConfigEntry<bool> ReplaceLockboxDropTable;
         public static ConfigEntry<bool> ReplaceCrashedMultishopDropTable;
         public static ConfigEntry<bool> ReplaceBossHunterDropTable;
+        public static ConfigEntry<float> SpeedItemSpawnMultiplier;
 
         public static ConfigEntry<bool> ReplaceBossDropTable;
         public static ConfigEntry<bool> ReplaceAWUDropTable;
@@ -89,23 +90,24 @@ namespace ScrappyChests
 
             ModEnabled = Config.Bind<bool>("Configuration", "Mod enabled", true, "Mod enabled");
 
-            ReplaceChestDropTable = Config.Bind<bool>("Chests", "Chest", true, "Chest will drop scrap instead of items");
-            ReplaceMultiShopDropTable = Config.Bind<bool>("Chests", "Multishop Terminal", true, "Multishop Terminal will drop scrap instead of items");
-            ReplaceAdaptiveChestDropTable = Config.Bind<bool>("Chests", "Adaptive Chest", true, "Adaptive Chest will drop scrap instead of items");
+            ReplaceChestDropTable = Config.Bind<bool>("Chests", "Chest", true, "Chests will drop scrap instead of items");
+            ReplaceMultiShopDropTable = Config.Bind<bool>("Chests", "Multishop Terminal", true, "Multishop Terminals will drop scrap instead of items");
+            ReplaceAdaptiveChestDropTable = Config.Bind<bool>("Chests", "Adaptive Chest", true, "Adaptive Chests will drop scrap instead of items");
             ReplaceChanceShrineDropTable = Config.Bind<bool>("Chests", "Shrine of Chance", true, "Shrine of Chance will drop scrap instead of items");
-            ReplaceLegendaryChestDropTable = Config.Bind<bool>("Chests", "Legendary Chest", true, "Legendary Chest will drop scrap instead of items");
+            ReplaceLegendaryChestDropTable = Config.Bind<bool>("Chests", "Legendary Chest", true, "Legendary Chests will drop scrap instead of items");
             ReplaceVoidPotentialDropTable = Config.Bind<bool>("Chests", "Void Potential", true, "Void Potential will drop scrap instead of items");
             ReplaceVoidCradleDropTable = Config.Bind<bool>("Chests", "Void Cradle", true, "Void Cradle will drop scrap instead of items");
-            ReplaceLunarPodDropTable = Config.Bind<bool>("Chests", "Lunar Pod", false, "Lunar Pod will drop Beads of Fealty instead of items");
-            ReplaceLunarBudsDropTable = Config.Bind<bool>("Chests", "Lunar Bud", false, "Lunar Bud in the Bazaar Between Time will always sell Beads of Fealty");
+            ReplaceLunarPodDropTable = Config.Bind<bool>("Chests", "Lunar Pod", false, "Lunar Pods will drop Beads of Fealty instead of items");
+            ReplaceLunarBudsDropTable = Config.Bind<bool>("Chests", "Lunar Bud", false, "Lunar Buds in the Bazaar Between Time will always sell Beads of Fealty");
 
             PrinterSpawnMultiplier = Config.Bind("Printers", "Printer spawn multiplier", 1.5f, "Controls the spawn rate of printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
             AddVoidItemsToPrinters = Config.Bind<bool>("Printers", "Add void items to Printers", true, "Add void items to Printers");
             AddVoidItemsToCauldrons = Config.Bind<bool>("Printers", "Add void items to Cauldrons", true, "Add void items to Cauldrons");
 
-            ReplaceLockboxDropTable = Config.Bind<bool>("Items", "Rusted Key", false, "Lockboxs will drop scrap instead of items");
+            ReplaceLockboxDropTable = Config.Bind<bool>("Items", "Rusted Key", false, "Lockboxes will drop scrap instead of items");
             ReplaceCrashedMultishopDropTable = Config.Bind<bool>("Items", "Crashed Multishop", false, "Crashed Multishop will drop scrap instead of items");
             ReplaceBossHunterDropTable = Config.Bind<bool>("Items", "Trophy Hunters Tricorn", false, "Trophy Hunter's Tricorn will drop scrap instead of items");
+            SpeedItemSpawnMultiplier = Config.Bind<float>("Items", "Speed items spawn multiplier", 1.25f, "Controls the spawn rate of speed items. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn speed items.");
 
             ReplaceBossDropTable = Config.Bind<bool>("Mobs", "Boss", true, "Defeating a Boss will drop scrap instead of items");
             ReplaceAWUDropTable = Config.Bind<bool>("Mobs", "Alloy Worship Unit", true, "Alloy Worship Unit will drop scrap instead of items");
@@ -113,7 +115,7 @@ namespace ScrappyChests
             ReplaceElderLemurianDropTable = Config.Bind<bool>("Mobs", "Elite Elder Lemurian", false, "The Elite Elder Lemurian in the hidden chamber of Abandoned Aqueduct will drop scrap instead of bands");
 
             ReplaceDoppelgangerDropTable = Config.Bind<bool>("Artifacts", "Relentless Doppelganger", false, "The Relentless Doppelganger from the Artifact of Vengeance will drop scrap instead of items");
-            ReplaceSacrificeArtifactDropTable = Config.Bind<bool>("Artifacts", "Artifact of Sacrifice", true, "When using the Artifact of Sacrifice, the mobs will drop scrap instead of items");
+            ReplaceSacrificeArtifactDropTable = Config.Bind<bool>("Artifacts", "Artifact of Sacrifice", true, "When using the Artifact of Sacrifice, mobs will drop scrap instead of items");
 
             ReplaceSimulacrumOrbDropTable = Config.Bind<bool>("Waves", "Simulacrum", true, "The orb reward after each wave of Simulacrum will drop scrap instead of items");
             ReplaceVoidFieldsOrbDropTable = Config.Bind<bool>("Waves", "Void Fields", true, "The orb reward after each wave of the Void Fields will drop scrap instead of items");
@@ -143,6 +145,7 @@ namespace ScrappyChests
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLockboxDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceCrashedMultishopDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceBossHunterDropTable));
+            ModSettingsManager.AddOption(new StepSliderOption(SpeedItemSpawnMultiplier, new StepSliderConfig() { min = 0, max = 5, increment = 0.05f, formatString = "{0:0.##}x" }));
 
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceBossDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceAWUDropTable));
@@ -237,6 +240,8 @@ namespace ScrappyChests
                         basicDropTable.Add(Run.instance.availableVoidTier2DropList, basicDropTable.tier2Weight);
                         basicDropTable.Add(Run.instance.availableVoidTier3DropList, basicDropTable.tier3Weight);
                         basicDropTable.Add(Run.instance.availableVoidBossDropList, basicDropTable.bossWeight);
+
+                        UpdateSpeedItemsSpawnRate(basicDropTable.selector);
 
                         Log.Debug($"{nameof(ShopTerminalBehavior_GenerateNewPickupServer_bool)} {basicDropTable.GetType().Name} replaced");
                         orig(self, newHidden);
@@ -444,6 +449,11 @@ namespace ScrappyChests
         private WeightedSelection<DirectorCard> SceneDirector_GenerateInteractableCardSelection(On.RoR2.SceneDirector.orig_GenerateInteractableCardSelection orig, SceneDirector self)
         {
             var weightedSelection = orig(self);
+            if (PrinterSpawnMultiplier.Value == 1)
+            {
+                return weightedSelection;
+            }
+
             for (int i = 0; i < weightedSelection.choices.Length; i++)
             {
                 ref WeightedSelection<DirectorCard>.ChoiceInfo choice = ref weightedSelection.choices[i];
@@ -567,7 +577,41 @@ namespace ScrappyChests
                     }
                 }
 
+                UpdateSpeedItemsSpawnRate(selector);
+
                 Log.Debug($"{caller} {dropTable.GetType().Name} replaced");
+            }
+        }
+
+        private void UpdateSpeedItemsSpawnRate(WeightedSelection<PickupIndex> selector)
+        {
+            if (SpeedItemSpawnMultiplier.Value == 1)
+            {
+                return;
+            }
+
+            for (int i = 0; i < selector.choices.Length; i++)
+            {
+                ref var choice = ref selector.choices[i];
+
+                var speedItems = new[]
+                {
+                    RoR2Content.Items.Hoof.itemIndex,
+                    RoR2Content.Items.SprintBonus.itemIndex,//Energy Drink
+                    RoR2Content.Items.WardOnLevel.itemIndex,//Warbanner
+                    RoR2Content.Items.WarCryOnMultiKill.itemIndex,//Berzerker's Pauldron
+                    RoR2Content.Items.SprintOutOfCombat.itemIndex,//Red Whip
+                    DLC1Content.Items.MoveSpeedOnKill.itemIndex,//Hunter's Harpoon
+                    DLC1Content.Items.AttackSpeedAndMoveSpeed.itemIndex,//Mocha
+                };
+
+                if (speedItems.Contains(choice.value.pickupDef.itemIndex)
+                    || choice.value.equipmentIndex == RoR2Content.Equipment.TeamWarCry.equipmentIndex)//Gorag's Opus
+                {
+                    var oldWeight = choice.weight;
+                    selector.ModifyChoiceWeight(i, choice.weight * SpeedItemSpawnMultiplier.Value);
+                    Log.Debug($"{choice.value.pickupDef.nameToken} weight changed from {oldWeight} to {choice.weight}");
+                }
             }
         }
 
