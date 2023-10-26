@@ -21,7 +21,7 @@ namespace ScrappyChests
         public const string PluginGUID = "Lawlzee.ScrappyChests";
         public const string PluginAuthor = "Lawlzee";
         public const string PluginName = "Scrappy Chests";
-        public const string PluginVersion = "1.0.1";
+        public const string PluginVersion = "1.1.0";
 
         public static ConfigEntry<bool> ModEnabled;
 
@@ -32,15 +32,18 @@ namespace ScrappyChests
         public static ConfigEntry<bool> ReplaceLegendaryChestDropTable;
         public static ConfigEntry<bool> ReplaceVoidPotentialDropTable;
         public static ConfigEntry<bool> ReplaceVoidCradleDropTable;
-        public static ConfigEntry<float> PrinterSpawnMultiplier;
         public static ConfigEntry<bool> ReplaceLunarPodDropTable;
         public static ConfigEntry<bool> ReplaceLunarBudsDropTable;
 
+        public static ConfigEntry<float> PrinterSpawnMultiplier;
+        public static ConfigEntry<bool> AddVoidItemsToPrinters;
+        public static ConfigEntry<bool> AddVoidItemsToCauldrons;
+
         public static ConfigEntry<bool> ReplaceLockboxDropTable;
         public static ConfigEntry<bool> ReplaceCrashedMultishopDropTable;
+        public static ConfigEntry<bool> ReplaceBossHunterDropTable;
 
         public static ConfigEntry<bool> ReplaceBossDropTable;
-        public static ConfigEntry<bool> ReplaceBossHunterDropTable;
         public static ConfigEntry<bool> ReplaceAWUDropTable;
         public static ConfigEntry<bool> ReplaceScavengerDropTable;
         public static ConfigEntry<bool> ReplaceElderLemurianDropTable;
@@ -58,7 +61,6 @@ namespace ScrappyChests
         public static ConfigEntry<bool> ReplaceBlueItems;
         //todo: hidden chest
 
-
         public void Awake()
         {
             Log.Init(Logger);
@@ -69,10 +71,12 @@ namespace ScrappyChests
             On.RoR2.ShrineChanceBehavior.AddShrineStack += ShrineChanceBehavior_AddShrineStack;
             On.RoR2.FreeChestDropTable.GenerateDropPreReplacement += FreeChestDropTable_GenerateDropPreReplacement;
             On.RoR2.OptionChestBehavior.Roll += OptionChestBehavior_Roll;
+
             On.RoR2.SceneDirector.GenerateInteractableCardSelection += SceneDirector_GenerateInteractableCardSelection;
 
-            On.RoR2.BossGroup.DropRewards += BossGroup_DropRewards;
             On.RoR2.EquipmentSlot.FireBossHunter += EquipmentSlot_FireBossHunter;
+
+            On.RoR2.BossGroup.DropRewards += BossGroup_DropRewards;
             On.EntityStates.ScavBackpack.Opening.FixedUpdate += Opening_FixedUpdate;
             On.RoR2.MasterDropDroplet.DropItems += MasterDropDroplet_DropItems;
             On.RoR2.ChestBehavior.RollItem += ChestBehavior_RollItem;
@@ -91,16 +95,19 @@ namespace ScrappyChests
             ReplaceChanceShrineDropTable = Config.Bind<bool>("Chests", "Shrine of Chance", true, "Shrine of Chance will drop scrap instead of items");
             ReplaceLegendaryChestDropTable = Config.Bind<bool>("Chests", "Legendary Chest", true, "Legendary Chest will drop scrap instead of items");
             ReplaceVoidPotentialDropTable = Config.Bind<bool>("Chests", "Void Potential", true, "Void Potential will drop scrap instead of items");
-            ReplaceVoidCradleDropTable = Config.Bind<bool>("Chests", "Void Cradle", false, "Void Cradle will drop scrap instead of items");
-            PrinterSpawnMultiplier = Config.Bind("Chests", "Printer spawn multiplier", 1f, "Controls the spawn rate of printers. 0.0 = never. 1.0 = default spawn rate. 2.0 = 2 times more likely to spawn printers.");
+            ReplaceVoidCradleDropTable = Config.Bind<bool>("Chests", "Void Cradle", true, "Void Cradle will drop scrap instead of items");
             ReplaceLunarPodDropTable = Config.Bind<bool>("Chests", "Lunar Pod", false, "Lunar Pod will drop Beads of Fealty instead of items");
             ReplaceLunarBudsDropTable = Config.Bind<bool>("Chests", "Lunar Bud", false, "Lunar Bud in the Bazaar Between Time will always sell Beads of Fealty");
 
+            PrinterSpawnMultiplier = Config.Bind("Printers", "Printer spawn multiplier", 1.5f, "Controls the spawn rate of printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
+            AddVoidItemsToPrinters = Config.Bind<bool>("Printers", "Add void items to Printers", true, "Add void items to Printers");
+            AddVoidItemsToCauldrons = Config.Bind<bool>("Printers", "Add void items to Cauldrons", true, "Add void items to Cauldrons");
+
             ReplaceLockboxDropTable = Config.Bind<bool>("Items", "Rusted Key", false, "Lockboxs will drop scrap instead of items");
             ReplaceCrashedMultishopDropTable = Config.Bind<bool>("Items", "Crashed Multishop", false, "Crashed Multishop will drop scrap instead of items");
+            ReplaceBossHunterDropTable = Config.Bind<bool>("Items", "Trophy Hunters Tricorn", false, "Trophy Hunter's Tricorn will drop scrap instead of items");
 
             ReplaceBossDropTable = Config.Bind<bool>("Mobs", "Boss", true, "Defeating a Boss will drop scrap instead of items");
-            ReplaceBossHunterDropTable = Config.Bind<bool>("Mobs", "Trophy Hunters Tricorn", false, "Trophy Hunter's Tricorn will drop scrap instead of items");
             ReplaceAWUDropTable = Config.Bind<bool>("Mobs", "Alloy Worship Unit", true, "Alloy Worship Unit will drop scrap instead of items");
             ReplaceScavengerDropTable = Config.Bind<bool>("Mobs", "Scavenger", false, "Scavenger will drop scrap instead of items");
             ReplaceElderLemurianDropTable = Config.Bind<bool>("Mobs", "Elite Elder Lemurian", false, "The Elite Elder Lemurian in the hidden chamber of Abandoned Aqueduct will drop scrap instead of bands");
@@ -126,15 +133,18 @@ namespace ScrappyChests
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLegendaryChestDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceVoidPotentialDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceVoidCradleDropTable));
-            ModSettingsManager.AddOption(new StepSliderOption(PrinterSpawnMultiplier, new StepSliderConfig() { min = 0, max = 5, increment = 0.05f, formatString = "{0:0.##}" }));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLunarPodDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLunarBudsDropTable));
 
+            ModSettingsManager.AddOption(new StepSliderOption(PrinterSpawnMultiplier, new StepSliderConfig() { min = 0, max = 5, increment = 0.05f, formatString = "{0:0.##}x" }));
+            ModSettingsManager.AddOption(new CheckBoxOption(AddVoidItemsToPrinters));
+            ModSettingsManager.AddOption(new CheckBoxOption(AddVoidItemsToCauldrons));
+
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLockboxDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceCrashedMultishopDropTable));
+            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceBossHunterDropTable));
 
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceBossDropTable));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceBossHunterDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceAWUDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceScavengerDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceElderLemurianDropTable));
@@ -207,13 +217,34 @@ namespace ScrappyChests
         {
             if (ModEnabled.Value)
             {
-                if (ReplaceLunarBudsDropTable.Value && self.dropTable.name == "dtLunarChest")
+                if (self.serverMultiShopController == null)
                 {
-                    using var _ = ReplaceDropTable(self.dropTable, nameof(ShopTerminalBehavior_GenerateNewPickupServer_bool));
-                    orig(self, newHidden);
-                    return;
+                    if (ReplaceLunarBudsDropTable.Value && self.dropTable.name == "dtLunarChest")
+                    {
+                        using var _ = ReplaceDropTable(self.dropTable, nameof(ShopTerminalBehavior_GenerateNewPickupServer_bool));
+                        orig(self, newHidden);
+                        return;
+                    }
+                    
+                    if ((AddVoidItemsToPrinters.Value && self.dropTable.name.StartsWith("dtDuplicator"))
+                        || (AddVoidItemsToCauldrons.Value && self.dropTable.name is "dtTier1Item" or "dtTier2Item" or "dtTier3Item"))
+                    {
+                        BasicPickupDropTable basicDropTable = (BasicPickupDropTable)self.dropTable;
+
+                        using IDisposable disposable = CreateSelectorCopy(basicDropTable.selector, x => basicDropTable.selector = x);
+
+                        basicDropTable.Add(Run.instance.availableVoidTier1DropList, basicDropTable.tier1Weight);
+                        basicDropTable.Add(Run.instance.availableVoidTier2DropList, basicDropTable.tier2Weight);
+                        basicDropTable.Add(Run.instance.availableVoidTier3DropList, basicDropTable.tier3Weight);
+                        basicDropTable.Add(Run.instance.availableVoidBossDropList, basicDropTable.bossWeight);
+
+                        Log.Debug($"{nameof(ShopTerminalBehavior_GenerateNewPickupServer_bool)} {basicDropTable.GetType().Name} replaced");
+                        orig(self, newHidden);
+                        return;
+                    }
+
                 }
-                else if (ReplaceMultiShopDropTable.Value && self.serverMultiShopController != null)
+                else if (ReplaceMultiShopDropTable.Value)
                 {
                     using var _ = ReplaceDropTable(self.dropTable, nameof(ShopTerminalBehavior_GenerateNewPickupServer_bool));
                     orig(self, newHidden);
