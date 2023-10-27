@@ -90,6 +90,7 @@ namespace ScrappyChests
 
             On.RoR2.InfiniteTowerWaveController.DropRewards += InfiniteTowerWaveController_DropRewards;
             On.RoR2.ArenaMonsterItemDropTable.GenerateUniqueDropsPreReplacement += ArenaMonsterItemDropTable_GenerateUniqueDropsPreReplacement;
+            On.RoR2.ArenaMissionController.EndRound += ArenaMissionController_EndRound;
 
             ModEnabled = Config.Bind("Configuration", "Mod enabled", true, "Mod enabled");
 
@@ -459,28 +460,31 @@ namespace ScrappyChests
         {
             var weightedSelection = orig(self);
 
-            Dictionary<string, ConfigEntry<float>> configBySpawnCard = new Dictionary<string, ConfigEntry<float>>
+            if (ModEnabled.Value)
             {
-                ["iscDuplicator"] = WhitePrinterSpawnMultiplier,
-                ["iscDuplicatorLarge"] = GreenPrinterSpawnMultiplier,
-                ["iscDuplicatorMilitary"] = RedPrinterSpawnMultiplier,
-                ["iscDuplicatorWild"] = YellowPrinterSpawnMultiplier
-            };
-
-            for (int i = 0; i < weightedSelection.choices.Length; i++)
-            {
-                ref WeightedSelection<DirectorCard>.ChoiceInfo choice = ref weightedSelection.choices[i];
-
-                if (choice.value != null && configBySpawnCard.TryGetValue(choice.value.spawnCard.name, out var printerMultiplierConfig))
+                Dictionary<string, ConfigEntry<float>> configBySpawnCard = new Dictionary<string, ConfigEntry<float>>
                 {
-                    if (printerMultiplierConfig.Value == 1)
-                    {
-                        continue;
-                    }
+                    ["iscDuplicator"] = WhitePrinterSpawnMultiplier,
+                    ["iscDuplicatorLarge"] = GreenPrinterSpawnMultiplier,
+                    ["iscDuplicatorMilitary"] = RedPrinterSpawnMultiplier,
+                    ["iscDuplicatorWild"] = YellowPrinterSpawnMultiplier
+                };
 
-                    var oldWeigth = choice.weight;
-                    weightedSelection.ModifyChoiceWeight(i, choice.weight * printerMultiplierConfig.Value);
-                    Log.Debug($"iscDuplicator weight changed from {oldWeigth} to {choice.weight}");
+                for (int i = 0; i < weightedSelection.choices.Length; i++)
+                {
+                    ref WeightedSelection<DirectorCard>.ChoiceInfo choice = ref weightedSelection.choices[i];
+
+                    if (choice.value != null && configBySpawnCard.TryGetValue(choice.value.spawnCard.name, out var printerMultiplierConfig))
+                    {
+                        if (printerMultiplierConfig.Value == 1)
+                        {
+                            continue;
+                        }
+
+                        var oldWeigth = choice.weight;
+                        weightedSelection.ModifyChoiceWeight(i, choice.weight * printerMultiplierConfig.Value);
+                        Log.Debug($"iscDuplicator weight changed from {oldWeigth} to {choice.weight}");
+                    }
                 }
             }
 
@@ -508,6 +512,24 @@ namespace ScrappyChests
             }
 
             return orig(self, maxDrops, rng);
+        }
+
+        private void ArenaMissionController_EndRound(On.RoR2.ArenaMissionController.orig_EndRound orig, ArenaMissionController self)
+        {
+            if (ModEnabled.Value && ReplaceVoidFieldsOrbDropTable.Value)
+            {
+                using var disposables = new CompositeDisposable();
+
+                foreach (var rewardOrder in self.playerRewardOrder)
+                {
+                    disposables.Add(ReplaceDropTable(rewardOrder, nameof(ArenaMissionController_EndRound)));
+                }
+
+                orig(self);
+                return;
+            }
+
+            orig(self);
         }
 
         private IDisposable ReplaceDropTable(PickupDropTable dropTable, string caller)
