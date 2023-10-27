@@ -21,7 +21,7 @@ namespace ScrappyChests
         public const string PluginGUID = "Lawlzee.ScrappyChests";
         public const string PluginAuthor = "Lawlzee";
         public const string PluginName = "Scrappy Chests";
-        public const string PluginVersion = "1.1.0";
+        public const string PluginVersion = "1.1.1";
 
         public static ConfigEntry<bool> ModEnabled;
 
@@ -35,7 +35,10 @@ namespace ScrappyChests
         public static ConfigEntry<bool> ReplaceLunarPodDropTable;
         public static ConfigEntry<bool> ReplaceLunarBudsDropTable;
 
-        public static ConfigEntry<float> PrinterSpawnMultiplier;
+        public static ConfigEntry<float> WhitePrinterSpawnMultiplier;
+        public static ConfigEntry<float> GreenPrinterSpawnMultiplier;
+        public static ConfigEntry<float> RedPrinterSpawnMultiplier;
+        public static ConfigEntry<float> YellowPrinterSpawnMultiplier;
         public static ConfigEntry<bool> AddVoidItemsToPrinters;
         public static ConfigEntry<bool> AddVoidItemsToCauldrons;
 
@@ -100,7 +103,10 @@ namespace ScrappyChests
             ReplaceLunarPodDropTable = Config.Bind<bool>("Chests", "Lunar Pod", false, "Lunar Pods will drop Beads of Fealty instead of items");
             ReplaceLunarBudsDropTable = Config.Bind<bool>("Chests", "Lunar Bud", false, "Lunar Buds in the Bazaar Between Time will always sell Beads of Fealty");
 
-            PrinterSpawnMultiplier = Config.Bind("Printers", "Printer spawn multiplier", 1.5f, "Controls the spawn rate of printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
+            WhitePrinterSpawnMultiplier = Config.Bind("Printers", "White printer spawn multiplier", 1.5f, "Controls the spawn rate of white printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
+            GreenPrinterSpawnMultiplier = Config.Bind("Printers", "Green printer spawn multiplier", 2f, "Controls the spawn rate of green printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
+            RedPrinterSpawnMultiplier = Config.Bind("Printers", "Red printer spawn multiplier", 2f, "Controls the spawn rate of ref printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
+            YellowPrinterSpawnMultiplier = Config.Bind("Printers", "Yellow printer spawn multiplier", 2f, "Controls the spawn rate of yellow printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
             AddVoidItemsToPrinters = Config.Bind<bool>("Printers", "Add void items to Printers", true, "Add void items to Printers");
             AddVoidItemsToCauldrons = Config.Bind<bool>("Printers", "Add void items to Cauldrons", true, "Add void items to Cauldrons");
 
@@ -138,7 +144,10 @@ namespace ScrappyChests
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLunarPodDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLunarBudsDropTable));
 
-            ModSettingsManager.AddOption(new StepSliderOption(PrinterSpawnMultiplier, new StepSliderConfig() { min = 0, max = 5, increment = 0.05f, formatString = "{0:0.##}x" }));
+            ModSettingsManager.AddOption(new StepSliderOption(WhitePrinterSpawnMultiplier, new StepSliderConfig() { min = 0, max = 5, increment = 0.05f, formatString = "{0:0.##}x" }));
+            ModSettingsManager.AddOption(new StepSliderOption(GreenPrinterSpawnMultiplier, new StepSliderConfig() { min = 0, max = 5, increment = 0.05f, formatString = "{0:0.##}x" }));
+            ModSettingsManager.AddOption(new StepSliderOption(RedPrinterSpawnMultiplier, new StepSliderConfig() { min = 0, max = 5, increment = 0.05f, formatString = "{0:0.##}x" }));
+            ModSettingsManager.AddOption(new StepSliderOption(YellowPrinterSpawnMultiplier, new StepSliderConfig() { min = 0, max = 5, increment = 0.05f, formatString = "{0:0.##}x" }));
             ModSettingsManager.AddOption(new CheckBoxOption(AddVoidItemsToPrinters));
             ModSettingsManager.AddOption(new CheckBoxOption(AddVoidItemsToCauldrons));
 
@@ -449,19 +458,28 @@ namespace ScrappyChests
         private WeightedSelection<DirectorCard> SceneDirector_GenerateInteractableCardSelection(On.RoR2.SceneDirector.orig_GenerateInteractableCardSelection orig, SceneDirector self)
         {
             var weightedSelection = orig(self);
-            if (PrinterSpawnMultiplier.Value == 1)
+
+            Dictionary<string, ConfigEntry<float>> configBySpawnCard = new Dictionary<string, ConfigEntry<float>>
             {
-                return weightedSelection;
-            }
+                ["iscDuplicator"] = WhitePrinterSpawnMultiplier,
+                ["iscDuplicatorLarge"] = GreenPrinterSpawnMultiplier,
+                ["iscDuplicatorMilitary"] = RedPrinterSpawnMultiplier,
+                ["iscDuplicatorWild"] = YellowPrinterSpawnMultiplier
+            };
 
             for (int i = 0; i < weightedSelection.choices.Length; i++)
             {
                 ref WeightedSelection<DirectorCard>.ChoiceInfo choice = ref weightedSelection.choices[i];
 
-                if (choice.value != null && choice.value.spawnCard.name.StartsWith("iscDuplicator"))
+                if (choice.value != null && configBySpawnCard.TryGetValue(choice.value.spawnCard.name, out var printerMultiplierConfig))
                 {
+                    if (printerMultiplierConfig.Value == 1)
+                    {
+                        continue;
+                    }
+
                     var oldWeigth = choice.weight;
-                    weightedSelection.ModifyChoiceWeight(i, choice.weight * PrinterSpawnMultiplier.Value);
+                    weightedSelection.ModifyChoiceWeight(i, choice.weight * printerMultiplierConfig.Value);
                     Log.Debug($"iscDuplicator weight changed from {oldWeigth} to {choice.weight}");
                 }
             }

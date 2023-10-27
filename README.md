@@ -34,7 +34,10 @@ Each replacement rules can be configured in the game menu `Settings > Mod Option
 
 | Name | Default Value | Description |
 | --- | --- | --- |
-| Printer spawn multiplier | 1.5x | Controls the spawn rate of printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers. |
+| White printer spawn multiplier | 1.5x | Controls the spawn rate of white printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers. |
+| Green printer spawn multiplier | 2x | Controls the spawn rate of green printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers. |
+| Red printer spawn multiplier | 2x | Controls the spawn rate of red printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers. |
+| Yellow printer spawn multiplier | 2x | Controls the spawn rate of yellow printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers. |
 | Add void items to Printers | Enabled | Add void items to Printers |
 | Add void items to Cauldrons | Enabled | Add void items to Cauldrons |
 
