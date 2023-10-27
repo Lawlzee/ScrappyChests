@@ -21,7 +21,7 @@ namespace ScrappyChests
         public const string PluginGUID = "Lawlzee.ScrappyChests";
         public const string PluginAuthor = "Lawlzee";
         public const string PluginName = "Scrappy Chests";
-        public const string PluginVersion = "1.1.1";
+        public const string PluginVersion = "1.1.2";
 
         public static ConfigEntry<bool> ModEnabled;
 
