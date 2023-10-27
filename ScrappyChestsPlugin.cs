@@ -104,9 +104,9 @@ namespace ScrappyChests
             ReplaceLunarBudsDropTable = Config.Bind<bool>("Chests", "Lunar Bud", false, "Lunar Buds in the Bazaar Between Time will always sell Beads of Fealty");
 
             WhitePrinterSpawnMultiplier = Config.Bind("Printers", "White printer spawn multiplier", 1.5f, "Controls the spawn rate of white printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
-            GreenPrinterSpawnMultiplier = Config.Bind("Printers", "Green printer spawn multiplier", 2f, "Controls the spawn rate of green printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
-            RedPrinterSpawnMultiplier = Config.Bind("Printers", "Red printer spawn multiplier", 2f, "Controls the spawn rate of ref printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
-            YellowPrinterSpawnMultiplier = Config.Bind("Printers", "Yellow printer spawn multiplier", 2f, "Controls the spawn rate of yellow printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
+            GreenPrinterSpawnMultiplier = Config.Bind("Printers", "Green printer spawn multiplier", 2.5f, "Controls the spawn rate of green printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
+            RedPrinterSpawnMultiplier = Config.Bind("Printers", "Red printer spawn multiplier", 3f, "Controls the spawn rate of ref printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
+            YellowPrinterSpawnMultiplier = Config.Bind("Printers", "Yellow printer spawn multiplier", 3f, "Controls the spawn rate of yellow printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
             AddVoidItemsToPrinters = Config.Bind<bool>("Printers", "Add void items to Printers", true, "Add void items to Printers");
             AddVoidItemsToCauldrons = Config.Bind<bool>("Printers", "Add void items to Cauldrons", true, "Add void items to Cauldrons");
 
