@@ -6,6 +6,13 @@ ScrappyChests is a Risk of Rain 2 mod that substitutes the loot from chests and 
 
 [https://thunderstore.io/package/Lawlzee/ScrappyChests/](https://thunderstore.io/package/Lawlzee/ScrappyChests/)
 
+## Gameplay
+
+Below are links to various videos showcasing the mod.
+
+- [Cap_](https://www.youtube.com/watch?v=_OH1NYyIlpc)
+- [RayDans](https://www.youtube.com/watch?v=QDR5_SUpFIg)
+
 ## Replacement rules
 
 Each replacement rules can be configured in the game menu `Settings > Mod Options > ScrappyChests`.

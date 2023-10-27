@@ -1,3 +1,7 @@
+## 1.1.2
+- Updated documentation
+- Bug fixes
+
 ## 1.1.1
 - Tweaked the `Speed items multiplier` rule
 - Printer spawn rates are now configurable independently for each item tier
