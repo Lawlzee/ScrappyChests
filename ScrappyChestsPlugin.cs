@@ -91,46 +91,46 @@ namespace ScrappyChests
             On.RoR2.InfiniteTowerWaveController.DropRewards += InfiniteTowerWaveController_DropRewards;
             On.RoR2.ArenaMonsterItemDropTable.GenerateUniqueDropsPreReplacement += ArenaMonsterItemDropTable_GenerateUniqueDropsPreReplacement;
 
-            ModEnabled = Config.Bind<bool>("Configuration", "Mod enabled", true, "Mod enabled");
+            ModEnabled = Config.Bind("Configuration", "Mod enabled", true, "Mod enabled");
 
-            ReplaceChestDropTable = Config.Bind<bool>("Chests", "Chest", true, "Chests will drop scrap instead of items");
-            ReplaceMultiShopDropTable = Config.Bind<bool>("Chests", "Multishop Terminal", true, "Multishop Terminals will drop scrap instead of items");
-            ReplaceAdaptiveChestDropTable = Config.Bind<bool>("Chests", "Adaptive Chest", true, "Adaptive Chests will drop scrap instead of items");
-            ReplaceChanceShrineDropTable = Config.Bind<bool>("Chests", "Shrine of Chance", true, "Shrine of Chance will drop scrap instead of items");
-            ReplaceLegendaryChestDropTable = Config.Bind<bool>("Chests", "Legendary Chest", true, "Legendary Chests will drop scrap instead of items");
-            ReplaceVoidPotentialDropTable = Config.Bind<bool>("Chests", "Void Potential", true, "Void Potential will drop scrap instead of items");
-            ReplaceVoidCradleDropTable = Config.Bind<bool>("Chests", "Void Cradle", true, "Void Cradle will drop scrap instead of items");
-            ReplaceLunarPodDropTable = Config.Bind<bool>("Chests", "Lunar Pod", false, "Lunar Pods will drop Beads of Fealty instead of items");
-            ReplaceLunarBudsDropTable = Config.Bind<bool>("Chests", "Lunar Bud", false, "Lunar Buds in the Bazaar Between Time will always sell Beads of Fealty");
+            ReplaceChestDropTable = Config.Bind("Chests", "Chest", true, "Chests will drop scrap instead of items");
+            ReplaceMultiShopDropTable = Config.Bind("Chests", "Multishop Terminal", true, "Multishop Terminals will drop scrap instead of items");
+            ReplaceAdaptiveChestDropTable = Config.Bind("Chests", "Adaptive Chest", true, "Adaptive Chests will drop scrap instead of items");
+            ReplaceChanceShrineDropTable = Config.Bind("Chests", "Shrine of Chance", true, "Shrine of Chance will drop scrap instead of items");
+            ReplaceLegendaryChestDropTable = Config.Bind("Chests", "Legendary Chest", true, "Legendary Chests will drop scrap instead of items");
+            ReplaceVoidPotentialDropTable = Config.Bind("Chests", "Void Potential", true, "Void Potential will drop scrap instead of items");
+            ReplaceVoidCradleDropTable = Config.Bind("Chests", "Void Cradle", true, "Void Cradle will drop scrap instead of items");
+            ReplaceLunarPodDropTable = Config.Bind("Chests", "Lunar Pod", false, "Lunar Pods will drop Beads of Fealty instead of items");
+            ReplaceLunarBudsDropTable = Config.Bind("Chests", "Lunar Bud", false, "Lunar Buds in the Bazaar Between Time will always sell Beads of Fealty");
 
             WhitePrinterSpawnMultiplier = Config.Bind("Printers", "White printer spawn multiplier", 1.5f, "Controls the spawn rate of white printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
             GreenPrinterSpawnMultiplier = Config.Bind("Printers", "Green printer spawn multiplier", 2.5f, "Controls the spawn rate of green printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
             RedPrinterSpawnMultiplier = Config.Bind("Printers", "Red printer spawn multiplier", 3f, "Controls the spawn rate of ref printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
             YellowPrinterSpawnMultiplier = Config.Bind("Printers", "Yellow printer spawn multiplier", 3f, "Controls the spawn rate of yellow printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
-            AddVoidItemsToPrinters = Config.Bind<bool>("Printers", "Add void items to Printers", true, "Add void items to Printers");
-            AddVoidItemsToCauldrons = Config.Bind<bool>("Printers", "Add void items to Cauldrons", true, "Add void items to Cauldrons");
+            AddVoidItemsToPrinters = Config.Bind("Printers", "Add void items to Printers", true, "Add void items to Printers");
+            AddVoidItemsToCauldrons = Config.Bind("Printers", "Add void items to Cauldrons", true, "Add void items to Cauldrons");
 
-            ReplaceLockboxDropTable = Config.Bind<bool>("Items", "Rusted Key", false, "Lockboxes will drop scrap instead of items");
-            ReplaceCrashedMultishopDropTable = Config.Bind<bool>("Items", "Crashed Multishop", false, "Crashed Multishop will drop scrap instead of items");
-            ReplaceBossHunterDropTable = Config.Bind<bool>("Items", "Trophy Hunters Tricorn", false, "Trophy Hunter's Tricorn will drop scrap instead of items");
-            SpeedItemSpawnMultiplier = Config.Bind<float>("Items", "Speed items spawn multiplier", 1.25f, "Controls the spawn rate of speed items. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn speed items.");
+            ReplaceLockboxDropTable = Config.Bind("Items", "Rusted Key", false, "Lockboxes will drop scrap instead of items");
+            ReplaceCrashedMultishopDropTable = Config.Bind("Items", "Crashed Multishop", false, "Crashed Multishop will drop scrap instead of items");
+            ReplaceBossHunterDropTable = Config.Bind("Items", "Trophy Hunters Tricorn", false, "Trophy Hunter's Tricorn will drop scrap instead of items");
+            SpeedItemSpawnMultiplier = Config.Bind("Items", "Speed items spawn multiplier", 1.25f, "Controls the spawn rate of speed items. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn speed items.");
 
-            ReplaceBossDropTable = Config.Bind<bool>("Mobs", "Boss", true, "Defeating a Boss will drop scrap instead of items");
-            ReplaceAWUDropTable = Config.Bind<bool>("Mobs", "Alloy Worship Unit", true, "Alloy Worship Unit will drop scrap instead of items");
-            ReplaceScavengerDropTable = Config.Bind<bool>("Mobs", "Scavenger", false, "Scavenger will drop scrap instead of items");
-            ReplaceElderLemurianDropTable = Config.Bind<bool>("Mobs", "Elite Elder Lemurian", false, "The Elite Elder Lemurian in the hidden chamber of Abandoned Aqueduct will drop scrap instead of bands");
+            ReplaceBossDropTable = Config.Bind("Mobs", "Boss", true, "Defeating a Boss will drop scrap instead of items");
+            ReplaceAWUDropTable = Config.Bind("Mobs", "Alloy Worship Unit", true, "Alloy Worship Unit will drop scrap instead of items");
+            ReplaceScavengerDropTable = Config.Bind("Mobs", "Scavenger", false, "Scavenger will drop scrap instead of items");
+            ReplaceElderLemurianDropTable = Config.Bind("Mobs", "Elite Elder Lemurian", false, "The Elite Elder Lemurian in the hidden chamber of Abandoned Aqueduct will drop scrap instead of bands");
 
-            ReplaceDoppelgangerDropTable = Config.Bind<bool>("Artifacts", "Relentless Doppelganger", false, "The Relentless Doppelganger from the Artifact of Vengeance will drop scrap instead of items");
-            ReplaceSacrificeArtifactDropTable = Config.Bind<bool>("Artifacts", "Artifact of Sacrifice", true, "When using the Artifact of Sacrifice, mobs will drop scrap instead of items");
+            ReplaceDoppelgangerDropTable = Config.Bind("Artifacts", "Relentless Doppelganger", false, "The Relentless Doppelganger from the Artifact of Vengeance will drop scrap instead of items");
+            ReplaceSacrificeArtifactDropTable = Config.Bind("Artifacts", "Artifact of Sacrifice", true, "When using the Artifact of Sacrifice, mobs will drop scrap instead of items");
 
-            ReplaceSimulacrumOrbDropTable = Config.Bind<bool>("Waves", "Simulacrum", true, "The orb reward after each wave of Simulacrum will drop scrap instead of items");
-            ReplaceVoidFieldsOrbDropTable = Config.Bind<bool>("Waves", "Void Fields", true, "The orb reward after each wave of the Void Fields will drop scrap instead of items");
+            ReplaceSimulacrumOrbDropTable = Config.Bind("Waves", "Simulacrum", true, "The orb reward after each wave of Simulacrum will drop scrap instead of items");
+            ReplaceVoidFieldsOrbDropTable = Config.Bind("Waves", "Void Fields", true, "The orb reward after each wave of the Void Fields will drop scrap instead of items");
 
-            ReplaceWhiteItems = Config.Bind<bool>("Tiers", "White item", true, "Replace white item drops with white scrap");
-            ReplaceGreenItems = Config.Bind<bool>("Tiers", "Green item", true, "Replace green item drops with green scrap");
-            ReplaceRedItems = Config.Bind<bool>("Tiers", "Red item", true, "Replace red item drops with red scrap");
-            ReplaceYellowItems = Config.Bind<bool>("Tiers", "Yellow item", true, "Replace yellow item drops with yellow scrap");
-            ReplaceBlueItems = Config.Bind<bool>("Tiers", "Blue item", true, "Replace blue item drops with Beads of Fealty");
+            ReplaceWhiteItems = Config.Bind("Tiers", "White item", true, "Replace white item drops with white scrap");
+            ReplaceGreenItems = Config.Bind("Tiers", "Green item", true, "Replace green item drops with green scrap");
+            ReplaceRedItems = Config.Bind("Tiers", "Red item", true, "Replace red item drops with red scrap");
+            ReplaceYellowItems = Config.Bind("Tiers", "Yellow item", true, "Replace yellow item drops with yellow scrap");
+            ReplaceBlueItems = Config.Bind("Tiers", "Blue item", true, "Replace blue item drops with Beads of Fealty");
 
             ModSettingsManager.AddOption(new CheckBoxOption(ModEnabled));
 
