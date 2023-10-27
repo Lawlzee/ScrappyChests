@@ -590,26 +590,50 @@ namespace ScrappyChests
                 return;
             }
 
+            var speedItems = new (ItemIndex Item, float Weigth)[]
+            {
+                (RoR2Content.Items.Hoof.itemIndex, 1),//Paul's Goat Hoof
+                (RoR2Content.Items.SprintBonus.itemIndex, 1),//Energy Drink
+                (DLC1Content.Items.AttackSpeedAndMoveSpeed.itemIndex, 1),//Mocha
+                (RoR2Content.Items.SprintOutOfCombat.itemIndex, 1),//Red Whip
+                (RoR2Content.Items.JumpBoost.itemIndex, 1),//Wax Quail
+                (DLC1Content.Items.MoveSpeedOnKill.itemIndex, 1),//Hunter's Harpoon
+                (RoR2Content.Items.WardOnLevel.itemIndex, 0.33f),//Warbanner
+                (RoR2Content.Items.WarCryOnMultiKill.itemIndex, 0.33f),//Berzerker's Pauldron
+                (RoR2Content.Items.LunarBadLuck.itemIndex, 0.33f),//Purity
+                (RoR2Content.Items.AlienHead.itemIndex, 0.33f),//Alien Head
+                (RoR2Content.Items.UtilitySkillMagazine.itemIndex, 0.33f),//Hardlight Afterburner
+                (DLC1Content.Items.HalfAttackSpeedHalfCooldowns.itemIndex, 0.33f),//Light Flux Pauldron
+                (RoR2Content.Items.Phasing.itemIndex, 0.25f),//Old War Stealthkit
+                (RoR2Content.Items.Bandolier.itemIndex, 0.25f),//Bandolier
+            };
+
+            var speedEquipements = new (EquipmentIndex Equipement, float Weigth)[]
+            {
+                (RoR2Content.Equipment.TeamWarCry.equipmentIndex, 0.5f),//Gorag's Opus
+                (RoR2Content.Equipment.Gateway.equipmentIndex, 0.5f),//Eccentric Vase
+                (RoR2Content.Equipment.Jetpack.equipmentIndex, 0.5f),//Milky Chrysalis
+                (RoR2Content.Equipment.FireBallDash.equipmentIndex, 0.5f),//Volcanic Egg
+                (RoR2Content.Equipment.Tonic.equipmentIndex, 0.5f)//Spinel Tonic
+            };
+
             for (int i = 0; i < selector.choices.Length; i++)
             {
                 ref var choice = ref selector.choices[i];
+                var pickupDef = choice.value.pickupDef;
 
-                var speedItems = new[]
-                {
-                    RoR2Content.Items.Hoof.itemIndex,
-                    RoR2Content.Items.SprintBonus.itemIndex,//Energy Drink
-                    RoR2Content.Items.WardOnLevel.itemIndex,//Warbanner
-                    RoR2Content.Items.WarCryOnMultiKill.itemIndex,//Berzerker's Pauldron
-                    RoR2Content.Items.SprintOutOfCombat.itemIndex,//Red Whip
-                    DLC1Content.Items.MoveSpeedOnKill.itemIndex,//Hunter's Harpoon
-                    DLC1Content.Items.AttackSpeedAndMoveSpeed.itemIndex,//Mocha
-                };
+                var itemWeigth = speedItems
+                    .Where(x => x.Item == pickupDef.itemIndex)
+                    .Select(x => x.Weigth)
+                    .Concat(speedEquipements
+                        .Where(x => x.Equipement == pickupDef.equipmentIndex)
+                        .Select(x => x.Weigth))
+                    .FirstOrDefault();
 
-                if (speedItems.Contains(choice.value.pickupDef.itemIndex)
-                    || choice.value.equipmentIndex == RoR2Content.Equipment.TeamWarCry.equipmentIndex)//Gorag's Opus
+                if (itemWeigth > 0)
                 {
                     var oldWeight = choice.weight;
-                    selector.ModifyChoiceWeight(i, choice.weight * SpeedItemSpawnMultiplier.Value);
+                    selector.ModifyChoiceWeight(i, choice.weight + choice.weight * (SpeedItemSpawnMultiplier.Value - 1) * itemWeigth);
                     Log.Debug($"{choice.value.pickupDef.nameToken} weight changed from {oldWeight} to {choice.weight}");
                 }
             }

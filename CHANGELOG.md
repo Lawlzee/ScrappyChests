@@ -1,3 +1,6 @@
+## 1.1.1
+- Tweaked the `Speed items multiplier` rule
+
 ## 1.1.0
 **Added replacement rules:**
 
