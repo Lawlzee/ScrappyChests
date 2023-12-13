@@ -53,6 +53,7 @@ Each replacement rules can be configured in the game menu `Settings > Mod Option
 | Name | Default Value | Description |
 | --- | --- | --- |
 | Rusted Key | Disabled | Lockboxes will drop scrap instead of items |
+| Encrusted Key | Disabled | Encrusted Cache will drop scrap instead of items |
 | Crashed Multishop | Disabled | Crashed Multishop will drop scrap instead of items |
 | Trophy Hunters Tricorn | Disabled | Trophy Hunter's Tricorn will drop scrap instead of items |
 | Speed items multiplier | 1.25x | Controls the spawn rate of speed items. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn speed items. |
@@ -89,3 +90,6 @@ Each replacement rules can be configured in the game menu `Settings > Mod Option
 | Red item | Enabled | Replace red item drops with red scrap |
 | Yellow item | Enabled | Replace yellow item drops with yellow scrap |
 | Blue item | Enabled | Replace blue item drops with Beads of Fealty |
+| Void tier 1 item | Enabled | Replace void tier 1 drops with white scrap |
+| Void tier 2 item | Enabled | Replace void tier 2 drops with green scrap |
+| Void tier 3 item | Enabled | Replace void tier 3 drops with red scrap |

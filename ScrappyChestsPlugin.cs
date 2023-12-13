@@ -21,7 +21,7 @@ namespace ScrappyChests
         public const string PluginGUID = "Lawlzee.ScrappyChests";
         public const string PluginAuthor = "Lawlzee";
         public const string PluginName = "Scrappy Chests";
-        public const string PluginVersion = "1.1.2";
+        public const string PluginVersion = "1.2";
 
         public static ConfigEntry<bool> ModEnabled;
 
@@ -43,6 +43,7 @@ namespace ScrappyChests
         public static ConfigEntry<bool> AddVoidItemsToCauldrons;
 
         public static ConfigEntry<bool> ReplaceLockboxDropTable;
+        public static ConfigEntry<bool> ReplaceEncrustedCacheDropTable;
         public static ConfigEntry<bool> ReplaceCrashedMultishopDropTable;
         public static ConfigEntry<bool> ReplaceBossHunterDropTable;
         public static ConfigEntry<float> SpeedItemSpawnMultiplier;
@@ -63,6 +64,9 @@ namespace ScrappyChests
         public static ConfigEntry<bool> ReplaceRedItems;
         public static ConfigEntry<bool> ReplaceYellowItems;
         public static ConfigEntry<bool> ReplaceBlueItems;
+        public static ConfigEntry<bool> ReplaceVoidTier1Items;
+        public static ConfigEntry<bool> ReplaceVoidTier2Items;
+        public static ConfigEntry<bool> ReplaceVoidTier3Items;
         //todo: hidden chest
 
         public void Awake()
@@ -112,6 +116,7 @@ namespace ScrappyChests
             AddVoidItemsToCauldrons = Config.Bind("Printers", "Add void items to Cauldrons", true, "Add void items to Cauldrons");
 
             ReplaceLockboxDropTable = Config.Bind("Items", "Rusted Key", false, "Lockboxes will drop scrap instead of items");
+            ReplaceEncrustedCacheDropTable = Config.Bind("Items", "Encrusted Key", false, "Encrusted Cache will drop scrap instead of items");
             ReplaceCrashedMultishopDropTable = Config.Bind("Items", "Crashed Multishop", false, "Crashed Multishop will drop scrap instead of items");
             ReplaceBossHunterDropTable = Config.Bind("Items", "Trophy Hunters Tricorn", false, "Trophy Hunter's Tricorn will drop scrap instead of items");
             SpeedItemSpawnMultiplier = Config.Bind("Items", "Speed items spawn multiplier", 1.25f, "Controls the spawn rate of speed items. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn speed items.");
@@ -132,6 +137,9 @@ namespace ScrappyChests
             ReplaceRedItems = Config.Bind("Tiers", "Red item", true, "Replace red item drops with red scrap");
             ReplaceYellowItems = Config.Bind("Tiers", "Yellow item", true, "Replace yellow item drops with yellow scrap");
             ReplaceBlueItems = Config.Bind("Tiers", "Blue item", true, "Replace blue item drops with Beads of Fealty");
+            ReplaceVoidTier1Items = Config.Bind("Tiers", "Void tier 1 item", true, "Replace void tier 1 drops with white scrap");
+            ReplaceVoidTier2Items = Config.Bind("Tiers", "Void tier 2 item", true, "Replace void tier 2 drops with green scrap");
+            ReplaceVoidTier3Items = Config.Bind("Tiers", "Void tier 3 item", true, "Replace void tier 3 drops with red scrap");
 
             ModSettingsManager.AddOption(new CheckBoxOption(ModEnabled));
 
@@ -153,6 +161,7 @@ namespace ScrappyChests
             ModSettingsManager.AddOption(new CheckBoxOption(AddVoidItemsToCauldrons));
 
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLockboxDropTable));
+            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceEncrustedCacheDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceCrashedMultishopDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceBossHunterDropTable));
             ModSettingsManager.AddOption(new StepSliderOption(SpeedItemSpawnMultiplier, new StepSliderConfig() { min = 0, max = 5, increment = 0.05f, formatString = "{0:0.##}x" }));
@@ -173,6 +182,9 @@ namespace ScrappyChests
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceRedItems));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceYellowItems));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceBlueItems));
+            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceVoidTier1Items));
+            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceVoidTier2Items));
+            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceVoidTier3Items));
 
             ModSettingsManager.SetModIcon(LoadIconSprite());
         }
@@ -210,6 +222,15 @@ namespace ScrappyChests
                 else if (self.dropTable.name == "dtLunarChest")
                 {
                     if (ReplaceLunarPodDropTable.Value)
+                    {
+                        using var _ = ReplaceDropTable(self.dropTable, nameof(ChestBehavior_Roll));
+                        orig(self);
+                        return;
+                    }
+                }
+                else if (self.dropTable.name == "dtVoidChest")
+                {
+                    if (ReplaceVoidCradleDropTable.Value)
                     {
                         using var _ = ReplaceDropTable(self.dropTable, nameof(ChestBehavior_Roll));
                         orig(self);
@@ -446,11 +467,21 @@ namespace ScrappyChests
 
         private void OptionChestBehavior_Roll(On.RoR2.OptionChestBehavior.orig_Roll orig, OptionChestBehavior self)
         {
-            if (ModEnabled.Value && ReplaceVoidPotentialDropTable.Value)
+            if (ModEnabled.Value)
             {
-                using var _ = ReplaceDropTable(self.dropTable, nameof(OptionChestBehavior_Roll));
-                orig(self);
-                return;
+                if (ReplaceVoidPotentialDropTable.Value && self.dropTable.name == "dtVoidTriple")
+                {
+                    using var _ = ReplaceDropTable(self.dropTable, nameof(OptionChestBehavior_Roll));
+                    orig(self);
+                    return;
+                }
+                
+                if (ReplaceEncrustedCacheDropTable.Value && self.dropTable.name == "dtVoidLockbox")
+                {
+                    using var _ = ReplaceDropTable(self.dropTable, nameof(OptionChestBehavior_Roll));
+                    orig(self);
+                    return;
+                }
             }
 
             orig(self);
@@ -587,9 +618,9 @@ namespace ScrappyChests
                         ItemTier.Tier3 => ReplaceRedItems.Value,
                         ItemTier.Boss => ReplaceYellowItems.Value,
                         ItemTier.Lunar => ReplaceBlueItems.Value,
-                        ItemTier.VoidTier1 => ReplaceVoidCradleDropTable.Value,
-                        ItemTier.VoidTier2 => ReplaceVoidCradleDropTable.Value,
-                        ItemTier.VoidTier3 => ReplaceVoidCradleDropTable.Value,
+                        ItemTier.VoidTier1 => ReplaceVoidTier1Items.Value,
+                        ItemTier.VoidTier2 => ReplaceVoidTier2Items.Value,
+                        ItemTier.VoidTier3 => ReplaceVoidTier3Items.Value,
                         _ => false
                     };
 
@@ -619,7 +650,7 @@ namespace ScrappyChests
 
                 UpdateSpeedItemsSpawnRate(selector);
 
-                Log.Debug($"{caller} {dropTable.GetType().Name} replaced");
+                Log.Debug($"{caller} {dropTable.GetType().Name} ({dropTable.name}) replaced");
             }
         }
 

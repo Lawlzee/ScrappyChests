@@ -8,6 +8,7 @@
     <OutDir Condition="'$(Configuration)' == 'Release'">bin/Release/ScrappyChests</OutDir>
     <DebugSymbols>false</DebugSymbols>
     <DebugType>None</DebugType>
+    <NoWarn>Publicizer001</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

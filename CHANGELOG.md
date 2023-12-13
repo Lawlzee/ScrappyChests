@@ -1,3 +1,6 @@
+## 1.2
+- Encrusted Key caches now drop scrap by default (can be disabled in config).
+
 ## 1.1.2
 - Updated documentation
 - Bug fixes
