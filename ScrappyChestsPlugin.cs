@@ -11,6 +11,7 @@ using RoR2.Artifacts;
 using UnityEngine;
 using System.IO;
 using RiskOfOptions.OptionConfigs;
+using UnityEngine.AddressableAssets;
 
 namespace ScrappyChests
 {
@@ -22,6 +23,8 @@ namespace ScrappyChests
         public const string PluginAuthor = "Lawlzee";
         public const string PluginName = "Scrappy Chests";
         public const string PluginVersion = "1.2";
+
+        private Dictionary<string, (ConfigEntry<float> Config, GameObject SoupPrefab)> _printerConfigBySpawnCard;
 
         public static ConfigEntry<bool> ModEnabled;
 
@@ -552,28 +555,46 @@ namespace ScrappyChests
 
             if (ModEnabled.Value)
             {
-                Dictionary<string, ConfigEntry<float>> configBySpawnCard = new Dictionary<string, ConfigEntry<float>>
+                _printerConfigBySpawnCard ??= new Dictionary<string, (ConfigEntry<float> Config, GameObject SoupPrefab)>
                 {
-                    ["iscDuplicator"] = WhitePrinterSpawnMultiplier,
-                    ["iscDuplicatorLarge"] = GreenPrinterSpawnMultiplier,
-                    ["iscDuplicatorMilitary"] = RedPrinterSpawnMultiplier,
-                    ["iscDuplicatorWild"] = YellowPrinterSpawnMultiplier
+                    ["iscDuplicator"] = (WhitePrinterSpawnMultiplier, Addressables.LoadAssetAsync<GameObject>("RoR2/Base/LunarCauldrons/LunarCauldron, WhiteToGreen.prefab").WaitForCompletion()),
+                    ["iscDuplicatorLarge"] = (GreenPrinterSpawnMultiplier, Addressables.LoadAssetAsync<GameObject>("RoR2/Base/LunarCauldrons/LunarCauldron, GreenToRed Variant.prefab").WaitForCompletion()),
+                    ["iscDuplicatorMilitary"] = (RedPrinterSpawnMultiplier, Addressables.LoadAssetAsync<GameObject>("RoR2/Base/LunarCauldrons/LunarCauldron, RedToWhite Variant.prefab").WaitForCompletion()),
+                    ["iscDuplicatorWild"] = (YellowPrinterSpawnMultiplier, null)
                 };
 
                 for (int i = 0; i < weightedSelection.choices.Length; i++)
                 {
                     ref WeightedSelection<DirectorCard>.ChoiceInfo choice = ref weightedSelection.choices[i];
 
-                    if (choice.value != null && configBySpawnCard.TryGetValue(choice.value.spawnCard.name, out var printerMultiplierConfig))
+                    if (choice.value != null && _printerConfigBySpawnCard.TryGetValue(choice.value.spawnCard.name, out var printerMultiplierConfig))
                     {
-                        if (printerMultiplierConfig.Value == 1)
+                        if (printerMultiplierConfig.Config.Value != 1)
                         {
-                            continue;
+                            var oldWeigth = choice.weight;
+                            weightedSelection.ModifyChoiceWeight(i, choice.weight * printerMultiplierConfig.Config.Value);
+                            Log.Debug($"iscDuplicator weight changed from {oldWeigth} to {choice.weight}");
                         }
 
-                        var oldWeigth = choice.weight;
-                        weightedSelection.ModifyChoiceWeight(i, choice.weight * printerMultiplierConfig.Value);
-                        Log.Debug($"iscDuplicator weight changed from {oldWeigth} to {choice.weight}");
+                        if (printerMultiplierConfig.SoupPrefab != null)
+                        {
+                            var newCard = new DirectorCard
+                            {
+                                forbiddenUnlockable = choice.value.forbiddenUnlockable,
+                                forbiddenUnlockableDef = choice.value.forbiddenUnlockableDef,
+                                minimumStageCompletions = choice.value.minimumStageCompletions,
+                                preventOverhead = choice.value.preventOverhead,
+                                requiredUnlockable = choice.value.requiredUnlockable,
+                                requiredUnlockableDef = choice.value.requiredUnlockableDef,
+                                selectionWeight = choice.value.selectionWeight,
+                                spawnCard = Instantiate(choice.value.spawnCard),
+                                spawnDistance = choice.value.spawnDistance,
+                            };
+
+                            newCard.spawnCard.prefab = printerMultiplierConfig.SoupPrefab;
+                            choice.value = newCard;
+                            Log.Debug($"iscDuplicator replaced with soup");
+                        }
                     }
                 }
             }
