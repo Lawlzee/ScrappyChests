@@ -52,6 +52,8 @@ namespace ScrappyChests
         public static ConfigEntry<bool> ReplaceAWUDropTable;
         public static ConfigEntry<bool> ReplaceScavengerDropTable;
         public static ConfigEntry<bool> ReplaceElderLemurianDropTable;
+        
+        public static ConfigEntry<bool> ReplaceNewtAltarsCost;
 
         public static ConfigEntry<bool> ReplaceDoppelgangerDropTable;
         public static ConfigEntry<bool> ReplaceSacrificeArtifactDropTable;
@@ -88,6 +90,12 @@ namespace ScrappyChests
             On.EntityStates.ScavBackpack.Opening.FixedUpdate += Opening_FixedUpdate;
             On.RoR2.MasterDropDroplet.DropItems += MasterDropDroplet_DropItems;
             On.RoR2.ChestBehavior.RollItem += ChestBehavior_RollItem;
+
+            On.RoR2.PurchaseInteraction.GetContextString += PurchaseInteraction_GetContextString;
+            On.RoR2.PurchaseInteraction.CanBeAffordedByInteractor += PurchaseInteraction_CanBeAffordedByInteractor;
+            On.RoR2.PurchaseInteraction.OnInteractionBegin += PurchaseInteraction_OnInteractionBegin; ;
+            On.RoR2.PurchaseInteraction.UpdateHologramContent += PurchaseInteraction_UpdateHologramContent;
+            On.RoR2.UI.PingIndicator.RebuildPing += PingIndicator_RebuildPing;
 
             On.RoR2.DoppelgangerDropTable.GenerateDropPreReplacement += DoppelgangerDropTable_GenerateDropPreReplacement;
             On.RoR2.Artifacts.SacrificeArtifactManager.OnServerCharacterDeath += SacrificeArtifactManager_OnServerCharacterDeath;
@@ -126,6 +134,8 @@ namespace ScrappyChests
             ReplaceScavengerDropTable = Config.Bind("Mobs", "Scavenger", false, "Scavenger will drop scrap instead of items");
             ReplaceElderLemurianDropTable = Config.Bind("Mobs", "Elite Elder Lemurian", false, "The Elite Elder Lemurian in the hidden chamber of Abandoned Aqueduct will drop scrap instead of bands");
 
+            ReplaceNewtAltarsCost = Config.Bind("Costs", "Newt Altars uses white items", true, "Newt Altar uses white items as the activation cost instead of lunar coins");
+            
             ReplaceDoppelgangerDropTable = Config.Bind("Artifacts", "Relentless Doppelganger", false, "The Relentless Doppelganger from the Artifact of Vengeance will drop scrap instead of items");
             ReplaceSacrificeArtifactDropTable = Config.Bind("Artifacts", "Artifact of Sacrifice", true, "When using the Artifact of Sacrifice, mobs will drop scrap instead of items");
 
@@ -170,6 +180,8 @@ namespace ScrappyChests
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceAWUDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceScavengerDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceElderLemurianDropTable));
+
+            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceNewtAltarsCost));
 
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceDoppelgangerDropTable));
             ModSettingsManager.AddOption(new CheckBoxOption(ReplaceSacrificeArtifactDropTable));
@@ -412,6 +424,53 @@ namespace ScrappyChests
                 return;
             }
             orig(self);
+        }
+
+        private string PurchaseInteraction_GetContextString(On.RoR2.PurchaseInteraction.orig_GetContextString orig, PurchaseInteraction self, Interactor activator)
+        {
+            return ReplacePurchaseInteraction(self, () => orig(self, activator));
+        }
+        private bool PurchaseInteraction_CanBeAffordedByInteractor(On.RoR2.PurchaseInteraction.orig_CanBeAffordedByInteractor orig, PurchaseInteraction self, Interactor activator)
+        {
+            return ReplacePurchaseInteraction(self, () => orig(self, activator));
+        }
+
+        private void PurchaseInteraction_OnInteractionBegin(On.RoR2.PurchaseInteraction.orig_OnInteractionBegin orig, PurchaseInteraction self, Interactor activator)
+        {
+            ReplacePurchaseInteraction(self, () => { orig(self, activator); return true; });
+        }
+
+        private void PurchaseInteraction_UpdateHologramContent(On.RoR2.PurchaseInteraction.orig_UpdateHologramContent orig, PurchaseInteraction self, GameObject hologramContentObject)
+        {
+            ReplacePurchaseInteraction(self, () => { orig(self, hologramContentObject); return true; });
+        }
+
+        private void PingIndicator_RebuildPing(On.RoR2.UI.PingIndicator.orig_RebuildPing orig, RoR2.UI.PingIndicator self)
+        {
+            if (self.pingTarget)
+            {
+                PurchaseInteraction purchaseInteraction = self.pingTarget.GetComponent<PurchaseInteraction>();
+                if (purchaseInteraction?.displayNameToken == "NEWT_STATUE_NAME")
+                {
+                    ReplacePurchaseInteraction(purchaseInteraction, () => { orig(self); return true; });
+                    return;
+                }
+            }
+
+            orig(self);
+        }
+
+        private T ReplacePurchaseInteraction<T>(PurchaseInteraction self, Func<T> orig)
+        {
+            if (ModEnabled.Value && ReplaceNewtAltarsCost.Value && self.displayNameToken == "NEWT_STATUE_NAME")
+            {
+                var oldCostType = self.costType;
+                using var disposable = new Disposable(() => self.costType = oldCostType);
+                self.costType = CostTypeIndex.WhiteItem;
+                return orig();
+            }
+
+            return orig();
         }
 
         private PickupIndex FreeChestDropTable_GenerateDropPreReplacement(On.RoR2.FreeChestDropTable.orig_GenerateDropPreReplacement orig, FreeChestDropTable self, Xoroshiro128Plus rng)

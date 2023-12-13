@@ -67,6 +67,12 @@ Each replacement rules can be configured in the game menu `Settings > Mod Option
 | Scavenger | Disabled | Scavenger will drop scrap instead of items |
 | Elite Elder Lemurian | Disabled | The Elite Elder Lemurian in the hidden chamber of Abandoned Aqueduct will drop scrap instead of bands |
 
+### Costs rules
+
+| Name | Default Value | Description |
+| --- | --- | --- |
+| Newt Altars uses white items | Enabled | Newt Altar uses white items as the activation cost instead of lunar coins |
+
 ### Artifacts rules
 
 | Name | Default Value | Description |

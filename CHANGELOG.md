@@ -1,5 +1,6 @@
 ## 1.2
-- Encrusted Key caches now drop scrap by default (can be disabled in config).
+- Newt Altar now uses white items as the activation cost instead of lunar coins by default (configurable).
+- Encrusted Key caches now drop scrap by default (configurable).
 
 ## 1.1.2
 - Updated documentation
