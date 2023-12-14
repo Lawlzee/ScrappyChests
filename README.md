@@ -46,7 +46,18 @@ Each replacement rules can be configured in the game menu `Settings > Mod Option
 | Red printer spawn multiplier | 3x | Controls the spawn rate of red printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers. |
 | Yellow printer spawn multiplier | 3x | Controls the spawn rate of yellow printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers. |
 | Add void items to Printers | Enabled | Add void items to Printers |
+
+### Cauldrons rules
+
+| Name | Default Value | Description |
+| --- | --- | --- |
 | Add void items to Cauldrons | Enabled | Add void items to Cauldrons |
+| Add white Cauldrons to the Bazaar | Enabled | Add a white Cauldrons to the Bazaar |
+| Add yellow Cauldrons to the Bazaar | Enabled | Add yellow Cauldrons to the Bazaar |
+| Add yellow Cauldrons to the Moon | Enabled | Add a yellow Cauldrons to the Moon |
+| Yellow Cauldrons Cost | 2 white items, 1 green item, 1 yellow item |  Cost to use the yellow Cauldrons |
+
+
 
 ### Items rules
 
@@ -72,6 +83,7 @@ Each replacement rules can be configured in the game menu `Settings > Mod Option
 | Name | Default Value | Description |
 | --- | --- | --- |
 | Newt Altars uses white items | Enabled | Newt Altar uses white items as the activation cost instead of lunar coins |
+| Lunar Seer uses white items | Enabled | Lunar Seer (dream) uses white items as the activation cost instead of lunar coins |
 
 ### Artifacts rules
 

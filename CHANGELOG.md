@@ -1,6 +1,13 @@
 ## 1.2
-- Newt Altar now uses white items as the activation cost instead of lunar coins by default (configurable).
+- Added white Cauldrons to the Bazaar (configurable).
+- Added yellow Cauldrons
+    - They can be found in the Bazaar (configurable).
+    - They can be found on the moon (configurable).
+    - They cost 2 white items, 1 green item and 1 yellow item to activate (configurable) 
 - Encrusted Key caches now drop scrap by default (configurable).
+- Newt Altar now uses white items as the activation cost instead of lunar coins by default (configurable).
+- Lunar Seer (dream) now uses white items as the activation cost instead of lunar coins (configurable).
+
 
 ## 1.1.2
 - Updated documentation
