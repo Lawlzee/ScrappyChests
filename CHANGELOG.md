@@ -1,13 +1,13 @@
 ## 1.2
 - Added void printers to void seeds (configurable)
-    - Void seeds have ~50% chance to include void printers (configurable)
-    - Void printers have a 60% chance to be white, 36% to be green and 4% to be red (configurable)
+    - Void seeds have a ~50% chance to include void printers (configurable)
+    - Void printers have a 60% chance to be white, 36% to be green, and 4% to be red (configurable)
     - The credit cost is also configurable
 - Added white Cauldrons to the Bazaar (configurable).
 - Added yellow Cauldrons
     - They can be found in the Bazaar (configurable).
     - They can be found on the moon (configurable).
-    - They cost 2 white items, 1 green item and 1 yellow item to activate (configurable) 
+    - They cost 2 white items, 1 green item, and 1 yellow item to activate (configurable) 
 - Encrusted Key caches now drop scrap by default (configurable).
 - Newt Altar now uses white items as the activation cost instead of lunar coins by default (configurable).
 - Lunar Seer (dream) now uses white items as the activation cost instead of lunar coins (configurable).
