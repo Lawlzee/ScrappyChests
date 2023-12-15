@@ -46,6 +46,14 @@ Each replacement rules can be configured in the game menu `Settings > Mod Option
 | Red printer spawn multiplier | 3x | Controls the spawn rate of red printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers. |
 | Yellow printer spawn multiplier | 3x | Controls the spawn rate of yellow printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers. |
 | Add void items to Printers | Enabled | Add void items to Printers |
+| Add void printers to void seeds | Enabled | Add void printers to void seeds |
+| Void seeds void printers weigth | 0.2 | Void seeds void printers weigth |
+| Void seeds white void printers weigth | 60 | Void seeds white void printers weigth |
+| Void seeds white void printers credit cost | 25 | Void seeds white void printers credit cost |
+| Void seeds green void printers weigth | 36 | Void seeds green void printers weigth |
+| Void seeds green void printers credit cost | 40 | Void seeds green void printers credit cost |
+| Void seeds red void printers weigth | 4 | Void seeds red void printers weigth |
+| Void seeds red void printers credit cost | 50 | Void seeds red void printers credit cost |
 
 ### Cauldrons rules
 

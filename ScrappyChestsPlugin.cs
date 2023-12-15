@@ -105,6 +105,15 @@ namespace ScrappyChests
         public static ConfigEntry<float> YellowPrinterSpawnMultiplier;
         public static ConfigEntry<bool> AddVoidItemsToPrinters;
 
+        public static ConfigEntry<bool> AddVoidPrintersToVoidSeeds;
+        public static ConfigEntry<float> VoidSeedsPrinterWeight;
+        public static ConfigEntry<int> VoidSeedsPrinterWhiteWeight;
+        public static ConfigEntry<int> VoidSeedsPrinterWhiteCreditCost;
+        public static ConfigEntry<int> VoidSeedsPrinterGreenWeight;
+        public static ConfigEntry<int> VoidSeedsPrinterGreenCreditCost;
+        public static ConfigEntry<int> VoidSeedsPrinterRedWeight;
+        public static ConfigEntry<int> VoidSeedsPrinterRedCreditCost;
+
         public static ConfigEntry<bool> AddVoidItemsToCauldrons;
         public static ConfigEntry<bool> AddWhiteCauldronToBazaar;
         public static ConfigEntry<bool> AddYellowCauldronToBazaar;
@@ -154,6 +163,8 @@ namespace ScrappyChests
 
             On.RoR2.SceneDirector.GenerateInteractableCardSelection += SceneDirector_GenerateInteractableCardSelection;
 
+            On.RoR2.CampDirector.GenerateInteractableCardSelection += CampDirector_GenerateInteractableCardSelection;
+
             On.RoR2.EquipmentSlot.FireBossHunter += EquipmentSlot_FireBossHunter;
 
             On.RoR2.BossGroup.DropRewards += BossGroup_DropRewards;
@@ -196,6 +207,15 @@ namespace ScrappyChests
             RedPrinterSpawnMultiplier = Config.Bind("Printers", "Red printer spawn multiplier", 3f, "Controls the spawn rate of ref printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
             YellowPrinterSpawnMultiplier = Config.Bind("Printers", "Yellow printer spawn multiplier", 3f, "Controls the spawn rate of yellow printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
             AddVoidItemsToPrinters = Config.Bind("Printers", "Add void items to Printers", true, "Add void items to Printers");
+            
+            AddVoidPrintersToVoidSeeds = Config.Bind("Printers", "Add void printers to void seeds", true, "Add void printers to void seeds");
+            VoidSeedsPrinterWeight = Config.Bind("Printers", "Void seeds void printers weigth", 0.2f, "Void seeds void printers weigth");
+            VoidSeedsPrinterWhiteWeight = Config.Bind("Printers", "Void seeds white void printers weigth", 60, "Void seeds white void printers weigth");
+            VoidSeedsPrinterWhiteCreditCost = Config.Bind("Printers", "Void seeds white void printers credit cost", 25, "Void seeds white void printers credit cost");
+            VoidSeedsPrinterGreenWeight = Config.Bind("Printers", "Void seeds green void printers weigth", 36, "Void seeds green void printers weigth");
+            VoidSeedsPrinterGreenCreditCost = Config.Bind("Printers", "Void seeds green void printers credit cost", 40, "Void seeds green void printers credit cost");
+            VoidSeedsPrinterRedWeight = Config.Bind("Printers", "Void seeds red void printers weigth", 4, "Void seeds red void printers weigth");
+            VoidSeedsPrinterRedCreditCost = Config.Bind("Printers", "Void seeds red void printers credit cost", 50, "Void seeds red void printers credit cost");
 
             AddVoidItemsToCauldrons = Config.Bind("Cauldrons", "Add void items to Cauldrons", true, "Add void items to Cauldrons");
             AddWhiteCauldronToBazaar = Config.Bind("Cauldrons", "Add white Cauldrons to the Bazaar", true, "Add a white Cauldrons to the Bazaar");
@@ -260,6 +280,15 @@ namespace ScrappyChests
             ModSettingsManager.AddOption(new StepSliderOption(RedPrinterSpawnMultiplier, new StepSliderConfig() { min = 0, max = 5, increment = 0.05f, formatString = "{0:0.##}x" }));
             ModSettingsManager.AddOption(new StepSliderOption(YellowPrinterSpawnMultiplier, new StepSliderConfig() { min = 0, max = 5, increment = 0.05f, formatString = "{0:0.##}x" }));
             ModSettingsManager.AddOption(new CheckBoxOption(AddVoidItemsToPrinters));
+
+            ModSettingsManager.AddOption(new CheckBoxOption(AddVoidPrintersToVoidSeeds));
+            ModSettingsManager.AddOption(new StepSliderOption(VoidSeedsPrinterWeight, new StepSliderConfig() { min = 0, max = 5, increment = 0.025f, formatString = "{0:0.###}" }));
+            ModSettingsManager.AddOption(new IntSliderOption(VoidSeedsPrinterWhiteWeight, new IntSliderConfig() { min = 0, max = 100 }));
+            ModSettingsManager.AddOption(new IntSliderOption(VoidSeedsPrinterWhiteCreditCost, new IntSliderConfig() { min = 0, max = 100 }));
+            ModSettingsManager.AddOption(new IntSliderOption(VoidSeedsPrinterGreenWeight, new IntSliderConfig() { min = 0, max = 100 }));
+            ModSettingsManager.AddOption(new IntSliderOption(VoidSeedsPrinterGreenCreditCost, new IntSliderConfig() { min = 0, max = 100 }));
+            ModSettingsManager.AddOption(new IntSliderOption(VoidSeedsPrinterRedWeight, new IntSliderConfig() { min = 0, max = 100 }));
+            ModSettingsManager.AddOption(new IntSliderOption(VoidSeedsPrinterRedCreditCost, new IntSliderConfig() { min = 0, max = 100 }));
 
             ModSettingsManager.AddOption(new CheckBoxOption(AddVoidItemsToCauldrons));
             ModSettingsManager.AddOption(new CheckBoxOption(AddWhiteCauldronToBazaar));
@@ -371,11 +400,17 @@ namespace ScrappyChests
                     }
 
                     if ((AddVoidItemsToPrinters.Value && self.dropTable.name.StartsWith("dtDuplicator"))
-                        || (AddVoidItemsToCauldrons.Value && self.dropTable.name is "dtTier1Item" or "dtTier2Item" or "dtTier3Item"))
+                        || (AddVoidItemsToCauldrons.Value && self.dropTable.name is "dtTier1Item" or "dtTier2Item" or "dtTier3Item")
+                        || self.name == "VoidShopTerminal(Clone)")
                     {
                         BasicPickupDropTable basicDropTable = (BasicPickupDropTable)self.dropTable;
 
                         using IDisposable disposable = CreateSelectorCopy(basicDropTable.selector, x => basicDropTable.selector = x);
+
+                        if (self.name == "VoidShopTerminal(Clone)")
+                        {
+                            basicDropTable.selector.Clear();
+                        }
 
                         basicDropTable.Add(Run.instance.availableVoidTier1DropList, basicDropTable.tier1Weight);
                         basicDropTable.Add(Run.instance.availableVoidTier2DropList, basicDropTable.tier2Weight);
@@ -679,6 +714,62 @@ namespace ScrappyChests
             }
 
             return weightedSelection;
+        }
+
+        private WeightedSelection<DirectorCard> CampDirector_GenerateInteractableCardSelection(On.RoR2.CampDirector.orig_GenerateInteractableCardSelection orig, CampDirector self)
+        {
+            if (ModEnabled.Value && AddVoidPrintersToVoidSeeds.Value && self.interactableDirectorCards.name == "dccsVoidCampInteractables")
+            {
+                DirectorCardCategorySelection.Category printerCategory = new DirectorCardCategorySelection.Category
+                {
+                    name = "Printers",
+                    selectionWeight = VoidSeedsPrinterWeight.Value,
+                    cards = [
+                        CreateDirectorCard("RoR2/Base/Duplicator/iscDuplicator.asset", VoidSeedsPrinterWhiteWeight.Value, VoidSeedsPrinterWhiteCreditCost.Value),
+                        CreateDirectorCard("RoR2/Base/DuplicatorLarge/iscDuplicatorLarge.asset", VoidSeedsPrinterGreenWeight.Value, VoidSeedsPrinterGreenCreditCost.Value),
+                        CreateDirectorCard("RoR2/Base/DuplicatorMilitary/iscDuplicatorMilitary.asset", VoidSeedsPrinterRedWeight.Value, VoidSeedsPrinterRedCreditCost.Value)
+                    ]
+                };
+
+                DirectorCard CreateDirectorCard(string assetKey, int selectionWeight, int directorCreditCost)
+                {
+                    var spawnCard = Addressables.LoadAssetAsync<InteractableSpawnCard>(assetKey).WaitForCompletion();
+                    InteractableSpawnCard newSpawnCard = ScriptableObject.CreateInstance<InteractableSpawnCard>();
+
+                    newSpawnCard.sendOverNetwork = spawnCard.sendOverNetwork;
+                    newSpawnCard.hullSize = spawnCard.hullSize;
+                    newSpawnCard.nodeGraphType = spawnCard.nodeGraphType;
+                    newSpawnCard.requiredFlags = spawnCard.requiredFlags;
+                    newSpawnCard.forbiddenFlags = spawnCard.forbiddenFlags;
+                    newSpawnCard.directorCreditCost = directorCreditCost;
+                    newSpawnCard.occupyPosition = spawnCard.occupyPosition;
+                    newSpawnCard.eliteRules = spawnCard.eliteRules;
+                    newSpawnCard.orientToFloor = spawnCard.orientToFloor;
+                    newSpawnCard.slightlyRandomizeOrientation = spawnCard.slightlyRandomizeOrientation;
+                    newSpawnCard.skipSpawnWhenSacrificeArtifactEnabled = spawnCard.skipSpawnWhenSacrificeArtifactEnabled;
+                    newSpawnCard.weightScalarWhenSacrificeArtifactEnabled = spawnCard.weightScalarWhenSacrificeArtifactEnabled;
+                    newSpawnCard.maxSpawnsPerStage = spawnCard.maxSpawnsPerStage;
+
+                    newSpawnCard.prefab = Instantiate(spawnCard.prefab);
+                    ShopTerminalBehavior shopTerminal = newSpawnCard.prefab.GetComponent<ShopTerminalBehavior>();
+                    shopTerminal.name = "VoidShopTerminal";
+
+                    return new DirectorCard
+                    {
+                        spawnCard = newSpawnCard,
+                        selectionWeight = selectionWeight
+                    };
+                }
+
+                var oldCategories = self.interactableDirectorCards.categories;
+                using var disposable = new Disposable(() => self.interactableDirectorCards.categories = oldCategories);
+
+                self.interactableDirectorCards.categories = self.interactableDirectorCards.categories.AddToArray(printerCategory);
+
+                return orig(self);
+            }
+
+            return orig(self);
         }
 
         private CostTypeDef CostTypeCatalog_GetCostTypeDef(On.RoR2.CostTypeCatalog.orig_GetCostTypeDef orig, CostTypeIndex costTypeIndex)
