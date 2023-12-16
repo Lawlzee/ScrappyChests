@@ -25,12 +25,39 @@ namespace ScrappyChests
         public const string PluginGUID = "Lawlzee.ScrappyChests";
         public const string PluginAuthor = "Lawlzee";
         public const string PluginName = "Scrappy Chests";
-        public const string PluginVersion = "1.2";
+        public const string PluginVersion = "1.2.1";
 
         private static readonly CostTypeIndex _yellowSoupCostIndex = (CostTypeIndex)81273;
         private static readonly CostTypeDef _yellowSoupCostTypeDef = new CostTypeDef()
         {
             costStringFormatToken = "COST_ITEM_FORMAT",
+            buildCostString = (def, context) =>
+            {
+                var cost = GetYellowCauldronCost();
+                List<string> costParts = new List<string>();
+
+                AppendCost(cost.White, "white");
+                AppendCost(cost.Green, "green");
+                AppendCost(cost.Red, "red");
+                AppendCost(cost.Yellow, "yellow");
+
+                if (costParts.Count == 0)
+                {
+                    context.stringBuilder.Append("free");
+                    return;
+                }
+
+                context.stringBuilder.Append(string.Join(", ", costParts));
+
+                void AppendCost(int count, string tier)
+                {
+                    if (count > 0)
+                    {
+                        string plural = count > 1 ? "s" : "";
+                        costParts.Add($"{count} {tier}{plural}");
+                    }
+                }
+            },
             saturateWorldStyledCostString = true,
             isAffordable = (CostTypeDef costTypeDef, CostTypeDef.IsAffordableContext context) =>
             {
@@ -844,7 +871,6 @@ namespace ScrappyChests
             purchaseInteraction.costType = _yellowSoupCostIndex;
             (int White, int Green, int Red, int Yellow) cost = GetYellowCauldronCost();
             purchaseInteraction.cost = cost.White + cost.Green + cost.Red + cost.Yellow;
-            purchaseInteraction.costType = CostTypeIndex.BossItem;
 
             ShopTerminalBehavior terminalBehavior = yellowSoup.GetComponent<ShopTerminalBehavior>();
             terminalBehavior.dropTable = Addressables.LoadAssetAsync<BasicPickupDropTable>("RoR2/Base/DuplicatorWild/dtDuplicatorWild.asset").WaitForCompletion();

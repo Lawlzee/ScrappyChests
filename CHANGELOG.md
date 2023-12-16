@@ -1,3 +1,7 @@
+## 1.2.1
+- Fixed yellow cauldron cost
+- Better yellow cauldron cost label
+
 ## 1.2
 - Added void printers to void seeds (configurable)
     - Void seeds have a ~50% chance to include void printers (configurable)
