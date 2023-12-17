@@ -25,7 +25,7 @@ namespace ScrappyChests
         public const string PluginGUID = "Lawlzee.ScrappyChests";
         public const string PluginAuthor = "Lawlzee";
         public const string PluginName = "Scrappy Chests";
-        public const string PluginVersion = "1.2.1";
+        public const string PluginVersion = "1.2.2";
 
         private static readonly CostTypeIndex _yellowSoupCostIndex = (CostTypeIndex)81273;
         private static readonly CostTypeDef _yellowSoupCostTypeDef = new CostTypeDef()
@@ -191,6 +191,7 @@ namespace ScrappyChests
             On.RoR2.SceneDirector.GenerateInteractableCardSelection += SceneDirector_GenerateInteractableCardSelection;
 
             On.RoR2.CampDirector.GenerateInteractableCardSelection += CampDirector_GenerateInteractableCardSelection;
+            On.RoR2.DirectorCore.TrySpawnObject += DirectorCore_TrySpawnObject;
 
             On.RoR2.EquipmentSlot.FireBossHunter += EquipmentSlot_FireBossHunter;
 
@@ -428,13 +429,13 @@ namespace ScrappyChests
 
                     if ((AddVoidItemsToPrinters.Value && self.dropTable.name.StartsWith("dtDuplicator"))
                         || (AddVoidItemsToCauldrons.Value && self.dropTable.name is "dtTier1Item" or "dtTier2Item" or "dtTier3Item")
-                        || self.name == "VoidShopTerminal(Clone)")
+                        || self.name == "VoidShopTerminal")
                     {
                         BasicPickupDropTable basicDropTable = (BasicPickupDropTable)self.dropTable;
 
                         using IDisposable disposable = CreateSelectorCopy(basicDropTable.selector, x => basicDropTable.selector = x);
 
-                        if (self.name == "VoidShopTerminal(Clone)")
+                        if (self.name == "VoidShopTerminal")
                         {
                             basicDropTable.selector.Clear();
                         }
@@ -763,6 +764,7 @@ namespace ScrappyChests
                     var spawnCard = Addressables.LoadAssetAsync<InteractableSpawnCard>(assetKey).WaitForCompletion();
                     InteractableSpawnCard newSpawnCard = ScriptableObject.CreateInstance<InteractableSpawnCard>();
 
+                    newSpawnCard.name = "iscVoidPrinter";
                     newSpawnCard.sendOverNetwork = spawnCard.sendOverNetwork;
                     newSpawnCard.hullSize = spawnCard.hullSize;
                     newSpawnCard.nodeGraphType = spawnCard.nodeGraphType;
@@ -777,9 +779,7 @@ namespace ScrappyChests
                     newSpawnCard.weightScalarWhenSacrificeArtifactEnabled = spawnCard.weightScalarWhenSacrificeArtifactEnabled;
                     newSpawnCard.maxSpawnsPerStage = spawnCard.maxSpawnsPerStage;
 
-                    newSpawnCard.prefab = Instantiate(spawnCard.prefab);
-                    ShopTerminalBehavior shopTerminal = newSpawnCard.prefab.GetComponent<ShopTerminalBehavior>();
-                    shopTerminal.name = "VoidShopTerminal";
+                    newSpawnCard.prefab = spawnCard.prefab;
 
                     return new DirectorCard
                     {
@@ -797,6 +797,21 @@ namespace ScrappyChests
             }
 
             return orig(self);
+        }
+
+        private GameObject DirectorCore_TrySpawnObject(On.RoR2.DirectorCore.orig_TrySpawnObject orig, DirectorCore self, DirectorSpawnRequest directorSpawnRequest)
+        {
+            GameObject gameObject = orig(self, directorSpawnRequest);
+            if (gameObject)
+            {
+                if (directorSpawnRequest.spawnCard.name == "iscVoidPrinter")
+                {
+                    ShopTerminalBehavior shopTerminal = gameObject.GetComponent<ShopTerminalBehavior>();
+                    shopTerminal.name = "VoidShopTerminal";
+                }
+            }
+
+            return gameObject;
         }
 
         private CostTypeDef CostTypeCatalog_GetCostTypeDef(On.RoR2.CostTypeCatalog.orig_GetCostTypeDef orig, CostTypeIndex costTypeIndex)
