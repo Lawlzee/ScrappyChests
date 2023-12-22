@@ -27,159 +27,17 @@ namespace ScrappyChests
         public const string PluginName = "Scrappy Chests";
         public const string PluginVersion = "1.2.2";
 
+        private Configuration _config;
+
         private static readonly CostTypeIndex _yellowSoupCostIndex = (CostTypeIndex)81273;
-        private static readonly CostTypeDef _yellowSoupCostTypeDef = new CostTypeDef()
-        {
-            costStringFormatToken = "COST_ITEM_FORMAT",
-            buildCostString = (def, context) =>
-            {
-                var cost = GetYellowCauldronCost();
-                List<string> costParts = new List<string>();
-
-                AppendCost(cost.White, "white");
-                AppendCost(cost.Green, "green");
-                AppendCost(cost.Red, "red");
-                AppendCost(cost.Yellow, "yellow");
-
-                if (costParts.Count == 0)
-                {
-                    context.stringBuilder.Append("free");
-                    return;
-                }
-
-                context.stringBuilder.Append(string.Join(", ", costParts));
-
-                void AppendCost(int count, string tier)
-                {
-                    if (count > 0)
-                    {
-                        string plural = count > 1 ? "s" : "";
-                        costParts.Add($"{count} {tier}{plural}");
-                    }
-                }
-            },
-            saturateWorldStyledCostString = true,
-            isAffordable = (CostTypeDef costTypeDef, CostTypeDef.IsAffordableContext context) =>
-            {
-                CharacterBody component = context.activator.GetComponent<CharacterBody>();
-                if (component)
-                {
-                    Inventory inventory = component.inventory;
-                    if (inventory)
-                    {
-                        var cost = GetYellowCauldronCost();
-                        return HasAtLeastXTotalItemsOfTier(ItemTier.Tier1, cost.White)
-                            && HasAtLeastXTotalItemsOfTier(ItemTier.Tier2, cost.Green)
-                            && HasAtLeastXTotalItemsOfTier(ItemTier.Tier3, cost.Red)
-                            && HasAtLeastXTotalItemsOfTier(ItemTier.Boss, cost.Yellow);
-                    }
-                }
-                return false;
-
-                bool HasAtLeastXTotalItemsOfTier(ItemTier itemTier, int x)
-                {
-                    if (x == 0)
-                    {
-                        return true;
-                    }
-
-                    return component.inventory.HasAtLeastXTotalItemsOfTier(itemTier, x);
-                }
-            },
-            payCost = (CostTypeDef costTypeDef, CostTypeDef.PayCostContext context) =>
-            {
-                var cost = GetYellowCauldronCost();
-
-                PayCost(CostTypeIndex.WhiteItem, cost.White);
-                PayCost(CostTypeIndex.GreenItem, cost.Green);
-                PayCost(CostTypeIndex.RedItem, cost.Red);
-                PayCost(CostTypeIndex.BossItem, cost.Yellow);
-
-                context.cost = cost.White + cost.Green + cost.Red + cost.Yellow;
-
-                void PayCost(CostTypeIndex costTypeIndex, int cost)
-                {
-                    if (cost == 0)
-                    {
-                        return;
-                    }
-
-                    context.cost = cost;
-
-                    var costTypeDef = CostTypeCatalog.GetCostTypeDef(costTypeIndex);
-                    costTypeDef.payCost(costTypeDef, context);
-                }
-            },
-            colorIndex = ColorCatalog.ColorIndex.BossItem,
-            itemTier = ItemTier.Boss
-        };
-
-        public static ConfigEntry<bool> ModEnabled;
-
-        public static ConfigEntry<bool> ReplaceChestDropTable;
-        public static ConfigEntry<bool> ReplaceMultiShopDropTable;
-        public static ConfigEntry<bool> ReplaceAdaptiveChestDropTable;
-        public static ConfigEntry<bool> ReplaceChanceShrineDropTable;
-        public static ConfigEntry<bool> ReplaceLegendaryChestDropTable;
-        public static ConfigEntry<bool> ReplaceVoidPotentialDropTable;
-        public static ConfigEntry<bool> ReplaceVoidCradleDropTable;
-        public static ConfigEntry<bool> ReplaceLunarPodDropTable;
-        public static ConfigEntry<bool> ReplaceLunarBudsDropTable;
-
-        public static ConfigEntry<float> WhitePrinterSpawnMultiplier;
-        public static ConfigEntry<float> GreenPrinterSpawnMultiplier;
-        public static ConfigEntry<float> RedPrinterSpawnMultiplier;
-        public static ConfigEntry<float> YellowPrinterSpawnMultiplier;
-        public static ConfigEntry<bool> AddVoidItemsToPrinters;
-
-        public static ConfigEntry<bool> AddVoidPrintersToVoidSeeds;
-        public static ConfigEntry<float> VoidSeedsPrinterWeight;
-        public static ConfigEntry<int> VoidSeedsPrinterWhiteWeight;
-        public static ConfigEntry<int> VoidSeedsPrinterWhiteCreditCost;
-        public static ConfigEntry<int> VoidSeedsPrinterGreenWeight;
-        public static ConfigEntry<int> VoidSeedsPrinterGreenCreditCost;
-        public static ConfigEntry<int> VoidSeedsPrinterRedWeight;
-        public static ConfigEntry<int> VoidSeedsPrinterRedCreditCost;
-
-        public static ConfigEntry<bool> AddVoidItemsToCauldrons;
-        public static ConfigEntry<bool> AddWhiteCauldronToBazaar;
-        public static ConfigEntry<bool> AddYellowCauldronToBazaar;
-        public static ConfigEntry<bool> AddYellowCauldronToMoon;
-        public static ConfigEntry<string> YellowCauldronCost;
-
-        public static ConfigEntry<bool> ReplaceLockboxDropTable;
-        public static ConfigEntry<bool> ReplaceEncrustedCacheDropTable;
-        public static ConfigEntry<bool> ReplaceCrashedMultishopDropTable;
-        public static ConfigEntry<bool> ReplaceBossHunterDropTable;
-        public static ConfigEntry<float> SpeedItemSpawnMultiplier;
-
-        public static ConfigEntry<bool> ReplaceBossDropTable;
-        public static ConfigEntry<bool> ReplaceAWUDropTable;
-        public static ConfigEntry<bool> ReplaceScavengerDropTable;
-        public static ConfigEntry<bool> ReplaceElderLemurianDropTable;
-
-        public static ConfigEntry<bool> ReplaceNewtAltarsCost;
-        public static ConfigEntry<bool> ReplaceLunarSeerCost;
-
-        public static ConfigEntry<bool> ReplaceDoppelgangerDropTable;
-        public static ConfigEntry<bool> ReplaceSacrificeArtifactDropTable;
-
-        public static ConfigEntry<bool> ReplaceSimulacrumOrbDropTable;
-        public static ConfigEntry<bool> ReplaceVoidFieldsOrbDropTable;
-
-        public static ConfigEntry<bool> ReplaceWhiteItems;
-        public static ConfigEntry<bool> ReplaceGreenItems;
-        public static ConfigEntry<bool> ReplaceRedItems;
-        public static ConfigEntry<bool> ReplaceYellowItems;
-        public static ConfigEntry<bool> ReplaceBlueItems;
-        public static ConfigEntry<bool> ReplaceVoidTier1Items;
-        public static ConfigEntry<bool> ReplaceVoidTier2Items;
-        public static ConfigEntry<bool> ReplaceVoidTier3Items;
-        //todo: hidden chest
+        private CostTypeDef _yellowSoupCostTypeDef;
 
         public void Awake()
         {
             Log.Init(Logger);
+
+            _config = new Configuration(Config);
+            _config.InitUI(Info);
 
             On.RoR2.ChestBehavior.Roll += ChestBehavior_Roll;
             On.RoR2.ShopTerminalBehavior.GenerateNewPickupServer_bool += ShopTerminalBehavior_GenerateNewPickupServer_bool;
@@ -218,159 +76,100 @@ namespace ScrappyChests
 
             On.RoR2.SceneObjectToggleGroup.Awake += SceneObjectToggleGroup_Awake;
 
-            ModEnabled = Config.Bind("Configuration", "Mod enabled", true, "Mod enabled");
+            _yellowSoupCostTypeDef = new CostTypeDef()
+            {
+                costStringFormatToken = "COST_ITEM_FORMAT",
+                buildCostString = (def, context) =>
+                {
+                    var cost = GetYellowCauldronCost();
+                    List<string> costParts = new List<string>();
 
-            ReplaceChestDropTable = Config.Bind("Chests", "Chest", true, "Chests will drop scrap instead of items");
-            ReplaceMultiShopDropTable = Config.Bind("Chests", "Multishop Terminal", true, "Multishop Terminals will drop scrap instead of items");
-            ReplaceAdaptiveChestDropTable = Config.Bind("Chests", "Adaptive Chest", true, "Adaptive Chests will drop scrap instead of items");
-            ReplaceChanceShrineDropTable = Config.Bind("Chests", "Shrine of Chance", true, "Shrine of Chance will drop scrap instead of items");
-            ReplaceLegendaryChestDropTable = Config.Bind("Chests", "Legendary Chest", true, "Legendary Chests will drop scrap instead of items");
-            ReplaceVoidPotentialDropTable = Config.Bind("Chests", "Void Potential", true, "Void Potential will drop scrap instead of items");
-            ReplaceVoidCradleDropTable = Config.Bind("Chests", "Void Cradle", true, "Void Cradle will drop scrap instead of items");
-            ReplaceLunarPodDropTable = Config.Bind("Chests", "Lunar Pod", false, "Lunar Pods will drop Beads of Fealty instead of items");
-            ReplaceLunarBudsDropTable = Config.Bind("Chests", "Lunar Bud", false, "Lunar Buds in the Bazaar Between Time will always sell Beads of Fealty");
+                    AppendCost(cost.White, "white");
+                    AppendCost(cost.Green, "green");
+                    AppendCost(cost.Red, "red");
+                    AppendCost(cost.Yellow, "yellow");
 
-            WhitePrinterSpawnMultiplier = Config.Bind("Printers", "White printer spawn multiplier", 1.5f, "Controls the spawn rate of white printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
-            GreenPrinterSpawnMultiplier = Config.Bind("Printers", "Green printer spawn multiplier", 2.5f, "Controls the spawn rate of green printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
-            RedPrinterSpawnMultiplier = Config.Bind("Printers", "Red printer spawn multiplier", 3f, "Controls the spawn rate of ref printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
-            YellowPrinterSpawnMultiplier = Config.Bind("Printers", "Yellow printer spawn multiplier", 3f, "Controls the spawn rate of yellow printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
-            AddVoidItemsToPrinters = Config.Bind("Printers", "Add void items to Printers", true, "Add void items to Printers");
-            
-            AddVoidPrintersToVoidSeeds = Config.Bind("Printers", "Add void printers to void seeds", true, "Add void printers to void seeds");
-            VoidSeedsPrinterWeight = Config.Bind("Printers", "Void seeds void printers weigth", 0.2f, "Void seeds void printers weigth");
-            VoidSeedsPrinterWhiteWeight = Config.Bind("Printers", "Void seeds white void printers weigth", 60, "Void seeds white void printers weigth");
-            VoidSeedsPrinterWhiteCreditCost = Config.Bind("Printers", "Void seeds white void printers credit cost", 25, "Void seeds white void printers credit cost");
-            VoidSeedsPrinterGreenWeight = Config.Bind("Printers", "Void seeds green void printers weigth", 36, "Void seeds green void printers weigth");
-            VoidSeedsPrinterGreenCreditCost = Config.Bind("Printers", "Void seeds green void printers credit cost", 40, "Void seeds green void printers credit cost");
-            VoidSeedsPrinterRedWeight = Config.Bind("Printers", "Void seeds red void printers weigth", 4, "Void seeds red void printers weigth");
-            VoidSeedsPrinterRedCreditCost = Config.Bind("Printers", "Void seeds red void printers credit cost", 50, "Void seeds red void printers credit cost");
+                    if (costParts.Count == 0)
+                    {
+                        context.stringBuilder.Append("free");
+                        return;
+                    }
 
-            AddVoidItemsToCauldrons = Config.Bind("Cauldrons", "Add void items to Cauldrons", true, "Add void items to Cauldrons");
-            AddWhiteCauldronToBazaar = Config.Bind("Cauldrons", "Add white Cauldrons to the Bazaar", true, "Add a white Cauldrons to the Bazaar");
-            AddYellowCauldronToBazaar = Config.Bind("Cauldrons", "Add yellow Cauldrons to the Bazaar", true, "Add a yellow Cauldrons to the Bazaar");
-            AddYellowCauldronToMoon = Config.Bind("Cauldrons", "Add yellow Cauldrons to the Moon", true, "Add a yellow Cauldrons to the Moon");
-            YellowCauldronCost = Config.Bind("Cauldrons", "Yellow Cauldrons Cost", "wwgy", """
-                Cost to use the yellow Cauldrons
-                
-                w: white
-                g: green
-                r: red
-                y: yellow (boss)
+                    context.stringBuilder.Append(string.Join(", ", costParts));
 
-                Examples:
-                ywg: 1 yellow, 1 white, 1 green
-                wwwrr: 3 white, 2 red
-                """);
+                    void AppendCost(int count, string tier)
+                    {
+                        if (count > 0)
+                        {
+                            string plural = count > 1 ? "s" : "";
+                            costParts.Add($"{count} {tier}{plural}");
+                        }
+                    }
+                },
+                saturateWorldStyledCostString = true,
+                isAffordable = (CostTypeDef costTypeDef, CostTypeDef.IsAffordableContext context) =>
+                {
+                    CharacterBody component = context.activator.GetComponent<CharacterBody>();
+                    if (component)
+                    {
+                        Inventory inventory = component.inventory;
+                        if (inventory)
+                        {
+                            var cost = GetYellowCauldronCost();
+                            return HasAtLeastXTotalItemsOfTier(ItemTier.Tier1, cost.White)
+                                && HasAtLeastXTotalItemsOfTier(ItemTier.Tier2, cost.Green)
+                                && HasAtLeastXTotalItemsOfTier(ItemTier.Tier3, cost.Red)
+                                && HasAtLeastXTotalItemsOfTier(ItemTier.Boss, cost.Yellow);
+                        }
+                    }
+                    return false;
 
-            ReplaceLockboxDropTable = Config.Bind("Items", "Rusted Key", false, "Lockboxes will drop scrap instead of items");
-            ReplaceEncrustedCacheDropTable = Config.Bind("Items", "Encrusted Key", false, "Encrusted Cache will drop scrap instead of items");
-            ReplaceCrashedMultishopDropTable = Config.Bind("Items", "Crashed Multishop", false, "Crashed Multishop will drop scrap instead of items");
-            ReplaceBossHunterDropTable = Config.Bind("Items", "Trophy Hunters Tricorn", false, "Trophy Hunter's Tricorn will drop scrap instead of items");
-            SpeedItemSpawnMultiplier = Config.Bind("Items", "Speed items spawn multiplier", 1.25f, "Controls the spawn rate of speed items. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn speed items.");
+                    bool HasAtLeastXTotalItemsOfTier(ItemTier itemTier, int x)
+                    {
+                        if (x == 0)
+                        {
+                            return true;
+                        }
 
-            ReplaceBossDropTable = Config.Bind("Mobs", "Boss", true, "Defeating a Boss will drop scrap instead of items");
-            ReplaceAWUDropTable = Config.Bind("Mobs", "Alloy Worship Unit", true, "Alloy Worship Unit will drop scrap instead of items");
-            ReplaceScavengerDropTable = Config.Bind("Mobs", "Scavenger", false, "Scavenger will drop scrap instead of items");
-            ReplaceElderLemurianDropTable = Config.Bind("Mobs", "Elite Elder Lemurian", false, "The Elite Elder Lemurian in the hidden chamber of Abandoned Aqueduct will drop scrap instead of bands");
+                        return component.inventory.HasAtLeastXTotalItemsOfTier(itemTier, x);
+                    }
+                },
+                payCost = (CostTypeDef costTypeDef, CostTypeDef.PayCostContext context) =>
+                {
+                    var cost = GetYellowCauldronCost();
 
-            ReplaceNewtAltarsCost = Config.Bind("Costs", "Newt Altars uses white items", true, "Newt Altar uses white items as the activation cost instead of lunar coins");
-            ReplaceLunarSeerCost = Config.Bind("Costs", "Lunar Seer uses white items", true, "Lunar Seer (dream) uses white items as the activation cost instead of lunar coins");
+                    PayCost(CostTypeIndex.WhiteItem, cost.White);
+                    PayCost(CostTypeIndex.GreenItem, cost.Green);
+                    PayCost(CostTypeIndex.RedItem, cost.Red);
+                    PayCost(CostTypeIndex.BossItem, cost.Yellow);
 
-            ReplaceDoppelgangerDropTable = Config.Bind("Artifacts", "Relentless Doppelganger", false, "The Relentless Doppelganger from the Artifact of Vengeance will drop scrap instead of items");
-            ReplaceSacrificeArtifactDropTable = Config.Bind("Artifacts", "Artifact of Sacrifice", true, "When using the Artifact of Sacrifice, mobs will drop scrap instead of items");
+                    context.cost = cost.White + cost.Green + cost.Red + cost.Yellow;
 
-            ReplaceSimulacrumOrbDropTable = Config.Bind("Waves", "Simulacrum", true, "The orb reward after each wave of Simulacrum will drop scrap instead of items");
-            ReplaceVoidFieldsOrbDropTable = Config.Bind("Waves", "Void Fields", true, "The orb reward after each wave of the Void Fields will drop scrap instead of items");
+                    void PayCost(CostTypeIndex costTypeIndex, int cost)
+                    {
+                        if (cost == 0)
+                        {
+                            return;
+                        }
 
-            ReplaceWhiteItems = Config.Bind("Tiers", "White item", true, "Replace white item drops with white scrap");
-            ReplaceGreenItems = Config.Bind("Tiers", "Green item", true, "Replace green item drops with green scrap");
-            ReplaceRedItems = Config.Bind("Tiers", "Red item", true, "Replace red item drops with red scrap");
-            ReplaceYellowItems = Config.Bind("Tiers", "Yellow item", true, "Replace yellow item drops with yellow scrap");
-            ReplaceBlueItems = Config.Bind("Tiers", "Blue item", true, "Replace blue item drops with Beads of Fealty");
-            ReplaceVoidTier1Items = Config.Bind("Tiers", "Void tier 1 item", true, "Replace void tier 1 drops with white scrap");
-            ReplaceVoidTier2Items = Config.Bind("Tiers", "Void tier 2 item", true, "Replace void tier 2 drops with green scrap");
-            ReplaceVoidTier3Items = Config.Bind("Tiers", "Void tier 3 item", true, "Replace void tier 3 drops with red scrap");
+                        context.cost = cost;
 
-            ModSettingsManager.AddOption(new CheckBoxOption(ModEnabled));
-
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceChestDropTable));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceMultiShopDropTable));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceAdaptiveChestDropTable));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceChanceShrineDropTable));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLegendaryChestDropTable));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceVoidPotentialDropTable));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceVoidCradleDropTable));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLunarPodDropTable));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLunarBudsDropTable));
-
-            ModSettingsManager.AddOption(new StepSliderOption(WhitePrinterSpawnMultiplier, new StepSliderConfig() { min = 0, max = 5, increment = 0.05f, formatString = "{0:0.##}x" }));
-            ModSettingsManager.AddOption(new StepSliderOption(GreenPrinterSpawnMultiplier, new StepSliderConfig() { min = 0, max = 5, increment = 0.05f, formatString = "{0:0.##}x" }));
-            ModSettingsManager.AddOption(new StepSliderOption(RedPrinterSpawnMultiplier, new StepSliderConfig() { min = 0, max = 5, increment = 0.05f, formatString = "{0:0.##}x" }));
-            ModSettingsManager.AddOption(new StepSliderOption(YellowPrinterSpawnMultiplier, new StepSliderConfig() { min = 0, max = 5, increment = 0.05f, formatString = "{0:0.##}x" }));
-            ModSettingsManager.AddOption(new CheckBoxOption(AddVoidItemsToPrinters));
-
-            ModSettingsManager.AddOption(new CheckBoxOption(AddVoidPrintersToVoidSeeds));
-            ModSettingsManager.AddOption(new StepSliderOption(VoidSeedsPrinterWeight, new StepSliderConfig() { min = 0, max = 5, increment = 0.025f, formatString = "{0:0.###}" }));
-            ModSettingsManager.AddOption(new IntSliderOption(VoidSeedsPrinterWhiteWeight, new IntSliderConfig() { min = 0, max = 100 }));
-            ModSettingsManager.AddOption(new IntSliderOption(VoidSeedsPrinterWhiteCreditCost, new IntSliderConfig() { min = 0, max = 100 }));
-            ModSettingsManager.AddOption(new IntSliderOption(VoidSeedsPrinterGreenWeight, new IntSliderConfig() { min = 0, max = 100 }));
-            ModSettingsManager.AddOption(new IntSliderOption(VoidSeedsPrinterGreenCreditCost, new IntSliderConfig() { min = 0, max = 100 }));
-            ModSettingsManager.AddOption(new IntSliderOption(VoidSeedsPrinterRedWeight, new IntSliderConfig() { min = 0, max = 100 }));
-            ModSettingsManager.AddOption(new IntSliderOption(VoidSeedsPrinterRedCreditCost, new IntSliderConfig() { min = 0, max = 100 }));
-
-            ModSettingsManager.AddOption(new CheckBoxOption(AddVoidItemsToCauldrons));
-            ModSettingsManager.AddOption(new CheckBoxOption(AddWhiteCauldronToBazaar));
-            ModSettingsManager.AddOption(new CheckBoxOption(AddYellowCauldronToBazaar));
-            ModSettingsManager.AddOption(new CheckBoxOption(AddYellowCauldronToMoon));
-            ModSettingsManager.AddOption(new StringInputFieldOption(YellowCauldronCost));
-
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLockboxDropTable));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceEncrustedCacheDropTable));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceCrashedMultishopDropTable));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceBossHunterDropTable));
-            ModSettingsManager.AddOption(new StepSliderOption(SpeedItemSpawnMultiplier, new StepSliderConfig() { min = 0, max = 5, increment = 0.05f, formatString = "{0:0.##}x" }));
-
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceBossDropTable));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceAWUDropTable));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceScavengerDropTable));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceElderLemurianDropTable));
-
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceNewtAltarsCost));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLunarSeerCost));
-
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceDoppelgangerDropTable));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceSacrificeArtifactDropTable));
-
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceSimulacrumOrbDropTable));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceVoidFieldsOrbDropTable));
-
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceWhiteItems));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceGreenItems));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceRedItems));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceYellowItems));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceBlueItems));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceVoidTier1Items));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceVoidTier2Items));
-            ModSettingsManager.AddOption(new CheckBoxOption(ReplaceVoidTier3Items));
-
-            ModSettingsManager.SetModIcon(LoadIconSprite());
-        }
-
-        Sprite LoadIconSprite()
-        {
-            Texture2D texture = new Texture2D(2, 2);
-            texture.LoadImage(File.ReadAllBytes(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Info.Location), "icon.png")));
-            return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
-
+                        var costTypeDef = CostTypeCatalog.GetCostTypeDef(costTypeIndex);
+                        costTypeDef.payCost(costTypeDef, context);
+                    }
+                },
+                colorIndex = ColorCatalog.ColorIndex.BossItem,
+                itemTier = ItemTier.Boss
+            };
         }
 
         private void ChestBehavior_Roll(On.RoR2.ChestBehavior.orig_Roll orig, ChestBehavior self)
         {
-            if (ModEnabled.Value && self.dropTable)
+            if (_config.ModEnabled.Value && self.dropTable)
             {
                 if (self.dropTable.name == "dtGoldChest")
                 {
-                    if (ReplaceLegendaryChestDropTable.Value)
+                    if (_config.ReplaceLegendaryChestDropTable.Value)
                     {
                         using var _ = ReplaceDropTable(self.dropTable, nameof(ChestBehavior_Roll));
                         orig(self);
@@ -379,7 +178,7 @@ namespace ScrappyChests
                 }
                 else if (self.dropTable.name == "dtLockbox")
                 {
-                    if (ReplaceLockboxDropTable.Value)
+                    if (_config.ReplaceLockboxDropTable.Value)
                     {
                         using var _ = ReplaceDropTable(self.dropTable, nameof(ChestBehavior_Roll));
                         orig(self);
@@ -388,7 +187,7 @@ namespace ScrappyChests
                 }
                 else if (self.dropTable.name == "dtLunarChest")
                 {
-                    if (ReplaceLunarPodDropTable.Value)
+                    if (_config.ReplaceLunarPodDropTable.Value)
                     {
                         using var _ = ReplaceDropTable(self.dropTable, nameof(ChestBehavior_Roll));
                         orig(self);
@@ -397,14 +196,14 @@ namespace ScrappyChests
                 }
                 else if (self.dropTable.name == "dtVoidChest")
                 {
-                    if (ReplaceVoidCradleDropTable.Value)
+                    if (_config.ReplaceVoidCradleDropTable.Value)
                     {
                         using var _ = ReplaceDropTable(self.dropTable, nameof(ChestBehavior_Roll));
                         orig(self);
                         return;
                     }
                 }
-                else if (ReplaceChestDropTable.Value)
+                else if (_config.ReplaceChestDropTable.Value)
                 {
                     using var _ = ReplaceDropTable(self.dropTable, nameof(ChestBehavior_Roll));
                     orig(self);
@@ -416,19 +215,19 @@ namespace ScrappyChests
 
         private void ShopTerminalBehavior_GenerateNewPickupServer_bool(On.RoR2.ShopTerminalBehavior.orig_GenerateNewPickupServer_bool orig, ShopTerminalBehavior self, bool newHidden)
         {
-            if (ModEnabled.Value)
+            if (_config.ModEnabled.Value)
             {
                 if (self.serverMultiShopController == null)
                 {
-                    if (ReplaceLunarBudsDropTable.Value && self.dropTable.name == "dtLunarChest")
+                    if (_config.ReplaceLunarBudsDropTable.Value && self.dropTable.name == "dtLunarChest")
                     {
                         using var _ = ReplaceDropTable(self.dropTable, nameof(ShopTerminalBehavior_GenerateNewPickupServer_bool));
                         orig(self, newHidden);
                         return;
                     }
 
-                    if ((AddVoidItemsToPrinters.Value && self.dropTable.name.StartsWith("dtDuplicator"))
-                        || (AddVoidItemsToCauldrons.Value && self.dropTable.name is "dtTier1Item" or "dtTier2Item" or "dtTier3Item")
+                    if ((_config.AddVoidItemsToPrinters.Value && self.dropTable.name.StartsWith("dtDuplicator"))
+                        || (_config.AddVoidItemsToCauldrons.Value && self.dropTable.name is "dtTier1Item" or "dtTier2Item" or "dtTier3Item")
                         || self.name == "VoidShopTerminal")
                     {
                         BasicPickupDropTable basicDropTable = (BasicPickupDropTable)self.dropTable;
@@ -453,7 +252,7 @@ namespace ScrappyChests
                     }
 
                 }
-                else if (ReplaceMultiShopDropTable.Value)
+                else if (_config.ReplaceMultiShopDropTable.Value)
                 {
                     using var _ = ReplaceDropTable(self.dropTable, nameof(ShopTerminalBehavior_GenerateNewPickupServer_bool));
                     orig(self, newHidden);
@@ -466,7 +265,7 @@ namespace ScrappyChests
 
         private void RouletteChestController_GenerateEntriesServer(On.RoR2.RouletteChestController.orig_GenerateEntriesServer orig, RouletteChestController self, Run.FixedTimeStamp startTime)
         {
-            if (ModEnabled.Value && ReplaceAdaptiveChestDropTable.Value)
+            if (_config.ModEnabled.Value && _config.ReplaceAdaptiveChestDropTable.Value)
             {
                 using var _ = ReplaceDropTable(self.dropTable, nameof(RouletteChestController_GenerateEntriesServer));
                 orig(self, startTime);
@@ -478,7 +277,7 @@ namespace ScrappyChests
 
         private void ShrineChanceBehavior_AddShrineStack(On.RoR2.ShrineChanceBehavior.orig_AddShrineStack orig, ShrineChanceBehavior self, Interactor activator)
         {
-            if (ModEnabled.Value && ReplaceChanceShrineDropTable.Value)
+            if (_config.ModEnabled.Value && _config.ReplaceChanceShrineDropTable.Value)
             {
                 using var _ = ReplaceDropTable(self.dropTable, nameof(ShrineChanceBehavior_AddShrineStack));
                 orig(self, activator);
@@ -489,17 +288,17 @@ namespace ScrappyChests
 
         private void BossGroup_DropRewards(On.RoR2.BossGroup.orig_DropRewards orig, BossGroup self)
         {
-            if (ModEnabled.Value)
+            if (_config.ModEnabled.Value)
             {
                 if (self.bossDropChance == 0 && self.dropTable.name == "dtTier3Item" && self.bossDropTables.Count == 1 && self.bossDropTables[0].name == "dtBossRoboBallBoss")
                 {
-                    if (ReplaceAWUDropTable.Value)
+                    if (_config.ReplaceAWUDropTable.Value)
                     {
                         Replace();
                         return;
                     }
                 }
-                else if (ReplaceBossDropTable.Value)
+                else if (_config.ReplaceBossDropTable.Value)
                 {
                     Replace();
                     return;
@@ -531,7 +330,7 @@ namespace ScrappyChests
 
         private bool EquipmentSlot_FireBossHunter(On.RoR2.EquipmentSlot.orig_FireBossHunter orig, EquipmentSlot self)
         {
-            if (ModEnabled.Value && ReplaceBossHunterDropTable.Value)
+            if (_config.ModEnabled.Value && _config.ReplaceBossHunterDropTable.Value)
             {
                 self.UpdateTargets(DLC1Content.Equipment.BossHunter.equipmentIndex, true);
                 HurtBox hurtBox = self.currentTarget.hurtBox;
@@ -549,7 +348,7 @@ namespace ScrappyChests
 
         private void Opening_FixedUpdate(On.EntityStates.ScavBackpack.Opening.orig_FixedUpdate orig, Opening self)
         {
-            if (ModEnabled.Value && ReplaceScavengerDropTable.Value)
+            if (_config.ModEnabled.Value && _config.ReplaceScavengerDropTable.Value)
             {
                 var chestBehavior = self.GetComponent<ChestBehavior>();
                 var dropTable = (BasicPickupDropTable)chestBehavior.dropTable;
@@ -579,7 +378,7 @@ namespace ScrappyChests
 
         private void ChestBehavior_RollItem(On.RoR2.ChestBehavior.orig_RollItem orig, ChestBehavior self)
         {
-            if (ModEnabled.Value && ReplaceScavengerDropTable.Value)
+            if (_config.ModEnabled.Value && _config.ReplaceScavengerDropTable.Value)
             {
                 self.Roll();
                 return;
@@ -623,9 +422,9 @@ namespace ScrappyChests
 
         private T ReplacePurchaseInteraction<T>(PurchaseInteraction self, Func<T> orig)
         {
-            if (ModEnabled.Value
-                && ((ReplaceNewtAltarsCost.Value && self.displayNameToken == "NEWT_STATUE_NAME")
-                    || (ReplaceLunarSeerCost.Value && self.displayNameToken == "BAZAAR_SEER_NAME")))
+            if (_config.ModEnabled.Value
+                && ((_config.ReplaceNewtAltarsCost.Value && self.displayNameToken == "NEWT_STATUE_NAME")
+                    || (_config.ReplaceLunarSeerCost.Value && self.displayNameToken == "BAZAAR_SEER_NAME")))
             {
                 var oldCostType = self.costType;
                 using var disposable = new Disposable(() => self.costType = oldCostType);
@@ -638,7 +437,7 @@ namespace ScrappyChests
 
         private PickupIndex FreeChestDropTable_GenerateDropPreReplacement(On.RoR2.FreeChestDropTable.orig_GenerateDropPreReplacement orig, FreeChestDropTable self, Xoroshiro128Plus rng)
         {
-            if (ModEnabled.Value && ReplaceCrashedMultishopDropTable.Value)
+            if (_config.ModEnabled.Value && _config.ReplaceCrashedMultishopDropTable.Value)
             {
                 orig(self, rng);
                 using var _ = ReplaceDropTable(self, nameof(FreeChestDropTable_GenerateDropPreReplacement));
@@ -650,7 +449,7 @@ namespace ScrappyChests
 
         private PickupIndex DoppelgangerDropTable_GenerateDropPreReplacement(On.RoR2.DoppelgangerDropTable.orig_GenerateDropPreReplacement orig, DoppelgangerDropTable self, Xoroshiro128Plus rng)
         {
-            if (ModEnabled.Value && ReplaceDoppelgangerDropTable.Value)
+            if (_config.ModEnabled.Value && _config.ReplaceDoppelgangerDropTable.Value)
             {
                 using var _ = ReplaceDropTable(self, nameof(DoppelgangerDropTable_GenerateDropPreReplacement));
                 return orig(self, rng);
@@ -661,7 +460,7 @@ namespace ScrappyChests
 
         private void SacrificeArtifactManager_OnServerCharacterDeath(On.RoR2.Artifacts.SacrificeArtifactManager.orig_OnServerCharacterDeath orig, DamageReport damageReport)
         {
-            if (ModEnabled.Value && ReplaceSacrificeArtifactDropTable.Value)
+            if (_config.ModEnabled.Value && _config.ReplaceSacrificeArtifactDropTable.Value)
             {
                 using var _ = ReplaceDropTable(SacrificeArtifactManager.dropTable, nameof(SacrificeArtifactManager_OnServerCharacterDeath));
                 orig(damageReport);
@@ -673,7 +472,7 @@ namespace ScrappyChests
 
         private void MasterDropDroplet_DropItems(On.RoR2.MasterDropDroplet.orig_DropItems orig, MasterDropDroplet self)
         {
-            if (ModEnabled.Value && ReplaceElderLemurianDropTable.Value)
+            if (_config.ModEnabled.Value && _config.ReplaceElderLemurianDropTable.Value)
             {
                 using CompositeDisposable disposable = new CompositeDisposable();
                 foreach (var dropTable in self.dropTables)
@@ -689,16 +488,16 @@ namespace ScrappyChests
 
         private void OptionChestBehavior_Roll(On.RoR2.OptionChestBehavior.orig_Roll orig, OptionChestBehavior self)
         {
-            if (ModEnabled.Value)
+            if (_config.ModEnabled.Value)
             {
-                if (ReplaceVoidPotentialDropTable.Value && self.dropTable.name == "dtVoidTriple")
+                if (_config.ReplaceVoidPotentialDropTable.Value && self.dropTable.name == "dtVoidTriple")
                 {
                     using var _ = ReplaceDropTable(self.dropTable, nameof(OptionChestBehavior_Roll));
                     orig(self);
                     return;
                 }
 
-                if (ReplaceEncrustedCacheDropTable.Value && self.dropTable.name == "dtVoidLockbox")
+                if (_config.ReplaceEncrustedCacheDropTable.Value && self.dropTable.name == "dtVoidLockbox")
                 {
                     using var _ = ReplaceDropTable(self.dropTable, nameof(OptionChestBehavior_Roll));
                     orig(self);
@@ -713,14 +512,14 @@ namespace ScrappyChests
         {
             var weightedSelection = orig(self);
 
-            if (ModEnabled.Value)
+            if (_config.ModEnabled.Value)
             {
                 Dictionary<string, ConfigEntry<float>> configBySpawnCard = new Dictionary<string, ConfigEntry<float>>
                 {
-                    ["iscDuplicator"] = WhitePrinterSpawnMultiplier,
-                    ["iscDuplicatorLarge"] = GreenPrinterSpawnMultiplier,
-                    ["iscDuplicatorMilitary"] = RedPrinterSpawnMultiplier,
-                    ["iscDuplicatorWild"] = YellowPrinterSpawnMultiplier
+                    ["iscDuplicator"] = _config.WhitePrinterSpawnMultiplier,
+                    ["iscDuplicatorLarge"] = _config.GreenPrinterSpawnMultiplier,
+                    ["iscDuplicatorMilitary"] = _config.RedPrinterSpawnMultiplier,
+                    ["iscDuplicatorWild"] = _config.YellowPrinterSpawnMultiplier
                 };
 
                 for (int i = 0; i < weightedSelection.choices.Length; i++)
@@ -746,16 +545,16 @@ namespace ScrappyChests
 
         private WeightedSelection<DirectorCard> CampDirector_GenerateInteractableCardSelection(On.RoR2.CampDirector.orig_GenerateInteractableCardSelection orig, CampDirector self)
         {
-            if (ModEnabled.Value && AddVoidPrintersToVoidSeeds.Value && self.interactableDirectorCards.name == "dccsVoidCampInteractables")
+            if (_config.ModEnabled.Value && _config.AddVoidPrintersToVoidSeeds.Value && self.interactableDirectorCards.name == "dccsVoidCampInteractables")
             {
                 DirectorCardCategorySelection.Category printerCategory = new DirectorCardCategorySelection.Category
                 {
                     name = "Printers",
-                    selectionWeight = VoidSeedsPrinterWeight.Value,
+                    selectionWeight = _config.VoidSeedsPrinterWeight.Value,
                     cards = [
-                        CreateDirectorCard("RoR2/Base/Duplicator/iscDuplicator.asset", VoidSeedsPrinterWhiteWeight.Value, VoidSeedsPrinterWhiteCreditCost.Value),
-                        CreateDirectorCard("RoR2/Base/DuplicatorLarge/iscDuplicatorLarge.asset", VoidSeedsPrinterGreenWeight.Value, VoidSeedsPrinterGreenCreditCost.Value),
-                        CreateDirectorCard("RoR2/Base/DuplicatorMilitary/iscDuplicatorMilitary.asset", VoidSeedsPrinterRedWeight.Value, VoidSeedsPrinterRedCreditCost.Value)
+                        CreateDirectorCard("RoR2/Base/Duplicator/iscDuplicator.asset", _config.VoidSeedsPrinterWhiteWeight.Value, _config.VoidSeedsPrinterWhiteCreditCost.Value),
+                        CreateDirectorCard("RoR2/Base/DuplicatorLarge/iscDuplicatorLarge.asset", _config.VoidSeedsPrinterGreenWeight.Value, _config.VoidSeedsPrinterGreenCreditCost.Value),
+                        CreateDirectorCard("RoR2/Base/DuplicatorMilitary/iscDuplicatorMilitary.asset", _config.VoidSeedsPrinterRedWeight.Value, _config.VoidSeedsPrinterRedCreditCost.Value)
                     ]
                 };
 
@@ -826,7 +625,7 @@ namespace ScrappyChests
 
         private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
         {
-            if (!ModEnabled.Value)
+            if (!_config.ModEnabled.Value)
             {
                 return;
             }
@@ -837,7 +636,7 @@ namespace ScrappyChests
                 return;
             }
 
-            if (AddWhiteCauldronToBazaar.Value)
+            if (_config.AddWhiteCauldronToBazaar.Value)
             {
                 GameObject whiteSoup = Instantiate(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/LunarCauldrons/LunarCauldron, RedToWhite Variant.prefab").WaitForCompletion());
                 whiteSoup.transform.position = new Vector3(-95.98551f, -24.7408f, -43.01519f);
@@ -846,7 +645,7 @@ namespace ScrappyChests
                 NetworkServer.Spawn(whiteSoup);
             }
 
-            if (AddYellowCauldronToBazaar.Value)
+            if (_config.AddYellowCauldronToBazaar.Value)
             {
                 GameObject yellowSoup = CreateYellowSoup(new Vector3(-103.5473f, -25.05961f, -40.06012f), Quaternion.Euler(0, -10f, 0));
                 NetworkServer.Spawn(yellowSoup);
@@ -855,7 +654,7 @@ namespace ScrappyChests
 
         private void SceneObjectToggleGroup_Awake(On.RoR2.SceneObjectToggleGroup.orig_Awake orig, SceneObjectToggleGroup self)
         {
-            if (ModEnabled.Value && AddYellowCauldronToMoon.Value)
+            if (_config.ModEnabled.Value && _config.AddYellowCauldronToMoon.Value)
             {
                 Scene activeScene = SceneManager.GetActiveScene();
                 if (activeScene.name == "moon2")
@@ -894,14 +693,14 @@ namespace ScrappyChests
             return yellowSoup;
         }
 
-        private static (int White, int Green, int Red, int Yellow) GetYellowCauldronCost()
+        private (int White, int Green, int Red, int Yellow) GetYellowCauldronCost()
         {
             int white = 0;
             int green = 0;
             int red = 0;
             int yellow = 0;
 
-            foreach (char c in YellowCauldronCost.Value)
+            foreach (char c in _config.YellowCauldronCost.Value)
             {
                 switch (c)
                 {
@@ -929,7 +728,7 @@ namespace ScrappyChests
 
         private void InfiniteTowerWaveController_DropRewards(On.RoR2.InfiniteTowerWaveController.orig_DropRewards orig, InfiniteTowerWaveController self)
         {
-            if (ModEnabled.Value && ReplaceSimulacrumOrbDropTable.Value)
+            if (_config.ModEnabled.Value && _config.ReplaceSimulacrumOrbDropTable.Value)
             {
                 using var _ = ReplaceDropTable(self.rewardDropTable, nameof(InfiniteTowerWaveController_DropRewards));
                 orig(self);
@@ -941,7 +740,7 @@ namespace ScrappyChests
 
         private PickupIndex[] ArenaMonsterItemDropTable_GenerateUniqueDropsPreReplacement(On.RoR2.ArenaMonsterItemDropTable.orig_GenerateUniqueDropsPreReplacement orig, ArenaMonsterItemDropTable self, int maxDrops, Xoroshiro128Plus rng)
         {
-            if (ModEnabled.Value && ReplaceSimulacrumOrbDropTable.Value)
+            if (_config.ModEnabled.Value && _config.ReplaceSimulacrumOrbDropTable.Value)
             {
                 using var _ = ReplaceDropTable(self, nameof(ArenaMonsterItemDropTable_GenerateUniqueDropsPreReplacement));
                 return orig(self, maxDrops, rng);
@@ -952,7 +751,7 @@ namespace ScrappyChests
 
         private void ArenaMissionController_EndRound(On.RoR2.ArenaMissionController.orig_EndRound orig, ArenaMissionController self)
         {
-            if (ModEnabled.Value && ReplaceVoidFieldsOrbDropTable.Value)
+            if (_config.ModEnabled.Value && _config.ReplaceVoidFieldsOrbDropTable.Value)
             {
                 using var disposables = new CompositeDisposable();
 
@@ -1018,14 +817,14 @@ namespace ScrappyChests
 
                     bool replaceItem = choice.value.pickupDef.itemTier switch
                     {
-                        ItemTier.Tier1 => ReplaceWhiteItems.Value,
-                        ItemTier.Tier2 => ReplaceGreenItems.Value,
-                        ItemTier.Tier3 => ReplaceRedItems.Value,
-                        ItemTier.Boss => ReplaceYellowItems.Value,
-                        ItemTier.Lunar => ReplaceBlueItems.Value,
-                        ItemTier.VoidTier1 => ReplaceVoidTier1Items.Value,
-                        ItemTier.VoidTier2 => ReplaceVoidTier2Items.Value,
-                        ItemTier.VoidTier3 => ReplaceVoidTier3Items.Value,
+                        ItemTier.Tier1 => _config.ReplaceWhiteItems.Value,
+                        ItemTier.Tier2 => _config.ReplaceGreenItems.Value,
+                        ItemTier.Tier3 => _config.ReplaceRedItems.Value,
+                        ItemTier.Boss => _config.ReplaceYellowItems.Value,
+                        ItemTier.Lunar => _config.ReplaceBlueItems.Value,
+                        ItemTier.VoidTier1 => _config.ReplaceVoidTier1Items.Value,
+                        ItemTier.VoidTier2 => _config.ReplaceVoidTier2Items.Value,
+                        ItemTier.VoidTier3 => _config.ReplaceVoidTier3Items.Value,
                         _ => false
                     };
 
@@ -1061,7 +860,7 @@ namespace ScrappyChests
 
         private void UpdateSpeedItemsSpawnRate(WeightedSelection<PickupIndex> selector)
         {
-            if (SpeedItemSpawnMultiplier.Value == 1)
+            if (_config.SpeedItemSpawnMultiplier.Value == 1)
             {
                 return;
             }
@@ -1109,7 +908,7 @@ namespace ScrappyChests
                 if (itemWeigth > 0)
                 {
                     var oldWeight = choice.weight;
-                    selector.ModifyChoiceWeight(i, choice.weight + choice.weight * (SpeedItemSpawnMultiplier.Value - 1) * itemWeigth);
+                    selector.ModifyChoiceWeight(i, choice.weight + choice.weight * (_config.SpeedItemSpawnMultiplier.Value - 1) * itemWeigth);
                     Log.Debug($"{choice.value.pickupDef.nameToken} weight changed from {oldWeight} to {choice.weight}");
                 }
             }
