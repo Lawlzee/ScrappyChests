@@ -1,3 +1,6 @@
+## 1.3
+- Changed the minimum stage count for red printers to spawn from 5 to 2. (configurable)
+
 ## 1.2.2
 - Fixed a bug where additional printers would spawn at coordinates (0, 0, 0) when void seeds were present on the map.
 

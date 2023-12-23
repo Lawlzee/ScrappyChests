@@ -33,6 +33,7 @@ internal class Configuration
     public ConfigEntry<float> GreenPrinterSpawnMultiplier { get; }
     public ConfigEntry<float> RedPrinterSpawnMultiplier { get; }
     public ConfigEntry<float> YellowPrinterSpawnMultiplier { get; }
+    public ConfigEntry<int> MinimumStageForRedPrinters { get; }
     public ConfigEntry<bool> AddVoidItemsToPrinters { get; }
 
     public ConfigEntry<bool> AddVoidPrintersToVoidSeeds { get; }
@@ -100,6 +101,7 @@ internal class Configuration
         GreenPrinterSpawnMultiplier = config.Bind("Printers", "Green printer spawn multiplier", defaultConfig.GreenPrinterSpawnMultiplier, "Controls the spawn rate of green printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
         RedPrinterSpawnMultiplier = config.Bind("Printers", "Red printer spawn multiplier", defaultConfig.RedPrinterSpawnMultiplier, "Controls the spawn rate of ref printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
         YellowPrinterSpawnMultiplier = config.Bind("Printers", "Yellow printer spawn multiplier", defaultConfig.YellowPrinterSpawnMultiplier, "Controls the spawn rate of yellow printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers.");
+        MinimumStageForRedPrinters = config.Bind("Printers", "Minimum stage for red printers to spawn", defaultConfig.MinimumStageForRedPrinters, "Minimum stage for red printers to spawn. The vanilla value is 5.");
         AddVoidItemsToPrinters = config.Bind("Printers", "Add void items to Printers", defaultConfig.AddVoidItemsToPrinters, "Add void items to Printers");
 
         AddVoidPrintersToVoidSeeds = config.Bind("Printers", "Add void printers to void seeds", defaultConfig.AddVoidPrintersToVoidSeeds, "Add void printers to void seeds");
@@ -184,6 +186,7 @@ internal class Configuration
         ModSettingsManager.AddOption(new StepSliderOption(GreenPrinterSpawnMultiplier, new StepSliderConfig() { min = 0, max = 5, increment = 0.05f, formatString = "{0:0.##}x" }));
         ModSettingsManager.AddOption(new StepSliderOption(RedPrinterSpawnMultiplier, new StepSliderConfig() { min = 0, max = 5, increment = 0.05f, formatString = "{0:0.##}x" }));
         ModSettingsManager.AddOption(new StepSliderOption(YellowPrinterSpawnMultiplier, new StepSliderConfig() { min = 0, max = 5, increment = 0.05f, formatString = "{0:0.##}x" }));
+        ModSettingsManager.AddOption(new IntSliderOption(MinimumStageForRedPrinters, new IntSliderConfig() { min = 1, max = 10 }));
         ModSettingsManager.AddOption(new CheckBoxOption(AddVoidItemsToPrinters));
 
         ModSettingsManager.AddOption(new CheckBoxOption(AddVoidPrintersToVoidSeeds));
@@ -261,6 +264,7 @@ internal class Configuration
         yield return (GreenPrinterSpawnMultiplier, preset.GreenPrinterSpawnMultiplier);
         yield return (RedPrinterSpawnMultiplier, preset.RedPrinterSpawnMultiplier);
         yield return (YellowPrinterSpawnMultiplier, preset.YellowPrinterSpawnMultiplier);
+        yield return (MinimumStageForRedPrinters, preset.MinimumStageForRedPrinters);
         yield return (AddVoidItemsToPrinters, preset.AddVoidItemsToPrinters);
         yield return (AddVoidPrintersToVoidSeeds, preset.AddVoidPrintersToVoidSeeds);
         yield return (VoidSeedsPrinterWeight, preset.VoidSeedsPrinterWeight);

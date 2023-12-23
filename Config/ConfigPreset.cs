@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ScrappyChests;
+﻿namespace ScrappyChests;
 
 public enum ConfigPresetMoniker
 {
@@ -77,6 +73,7 @@ public record ConfigPreset
         RedPrinterSpawnMultiplier = 1,
         YellowPrinterSpawnMultiplier = 1,
         AddVoidPrintersToVoidSeeds = false,
+        MinimumStageForRedPrinters = 5,
         AddWhiteCauldronToBazaar = false,
         AddYellowCauldronToBazaar = false,
         AddYellowCauldronToMoon = false,
@@ -99,6 +96,7 @@ public record ConfigPreset
         AddYellowCauldronToBazaar = false,
         AddYellowCauldronToMoon = false,
         AddVoidPrintersToVoidSeeds = false,
+        MinimumStageForRedPrinters = 5,
         ReplaceNewtAltarsCost = false,
         ReplaceLunarSeerCost = false,
         AddWhiteCauldronToBazaar = false
@@ -116,6 +114,7 @@ public record ConfigPreset
         AddYellowCauldronToBazaar = false,
         AddYellowCauldronToMoon = false,
         AddVoidPrintersToVoidSeeds = false,
+        MinimumStageForRedPrinters = 5,
         ReplaceNewtAltarsCost = false,
         ReplaceLunarSeerCost = false,
         SpeedItemSpawnMultiplier = 1.0f,
@@ -141,6 +140,7 @@ public record ConfigPreset
         YellowPrinterSpawnMultiplier = 1.0f,
         AddVoidItemsToPrinters = false,
         AddVoidPrintersToVoidSeeds = false,
+        MinimumStageForRedPrinters = 5,
         AddVoidItemsToCauldrons = false,
         AddWhiteCauldronToBazaar = false,
         AddYellowCauldronToBazaar = false,
@@ -201,6 +201,7 @@ public record ConfigPreset
     public bool AddVoidItemsToPrinters { get; init; } = true;
 
     public bool AddVoidPrintersToVoidSeeds { get; init; } = true;
+    public int MinimumStageForRedPrinters { get; init; } = 2;
     public float VoidSeedsPrinterWeight { get; init; } = 0.2f;
     public int VoidSeedsPrinterWhiteWeight { get; init; } = 60;
     public int VoidSeedsPrinterWhiteCreditCost { get; init; } = 25;

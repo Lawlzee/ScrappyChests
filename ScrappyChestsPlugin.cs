@@ -25,7 +25,7 @@ namespace ScrappyChests
         public const string PluginGUID = "Lawlzee.ScrappyChests";
         public const string PluginAuthor = "Lawlzee";
         public const string PluginName = "Scrappy Chests";
-        public const string PluginVersion = "1.2.2";
+        public const string PluginVersion = "1.3.0";
 
         private Configuration _config;
 
@@ -75,6 +75,8 @@ namespace ScrappyChests
             On.RoR2.ArenaMissionController.EndRound += ArenaMissionController_EndRound;
 
             On.RoR2.SceneObjectToggleGroup.Awake += SceneObjectToggleGroup_Awake;
+
+            On.RoR2.DirectorCard.IsAvailable += DirectorCard_IsAvailable;
 
             _yellowSoupCostTypeDef = new CostTypeDef()
             {
@@ -611,6 +613,21 @@ namespace ScrappyChests
             }
 
             return gameObject;
+        }
+
+        private bool DirectorCard_IsAvailable(On.RoR2.DirectorCard.orig_IsAvailable orig, DirectorCard self)
+        {
+            if (_config.ModEnabled.Value && self.spawnCard.name == "iscDuplicatorMilitary")
+            {
+                int defaultValue = self.minimumStageCompletions;
+
+                using var disposable = new Disposable(() => self.minimumStageCompletions = defaultValue);
+                self.minimumStageCompletions = _config.MinimumStageForRedPrinters.Value - 1;
+
+                return orig(self);
+            }
+
+            return orig(self);
         }
 
         private CostTypeDef CostTypeCatalog_GetCostTypeDef(On.RoR2.CostTypeCatalog.orig_GetCostTypeDef orig, CostTypeIndex costTypeIndex)
