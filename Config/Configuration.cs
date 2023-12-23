@@ -9,7 +9,6 @@ using UnityEngine;
 using System.IO;
 using BepInEx;
 using System.Linq;
-using Facepunch.Steamworks;
 
 namespace ScrappyChests;
 
@@ -64,6 +63,12 @@ internal class Configuration
 
     public ConfigEntry<bool> ReplaceNewtAltarsCost { get; }
     public ConfigEntry<bool> ReplaceLunarSeerCost { get; }
+    public ConfigEntry<bool> ReplaceLunarPodCost { get; }
+    public ConfigEntry<bool> ReplaceLunarBudCost { get; }
+    public ConfigEntry<bool> ReplaceSlabCost { get; }
+    public ConfigEntry<bool> ReplaceMageCost { get; }
+    public ConfigEntry<bool> ReplaceFrogCost { get; }
+    public ConfigEntry<bool> ReplaceShrineOfOrderCost { get; }
 
     public ConfigEntry<bool> ReplaceDoppelgangerDropTable { get; }
     public ConfigEntry<bool> ReplaceSacrificeArtifactDropTable { get; }
@@ -143,6 +148,12 @@ internal class Configuration
 
         ReplaceNewtAltarsCost = config.Bind("Costs", "Newt Altars uses white items", defaultConfig.ReplaceNewtAltarsCost, "Newt Altar uses white items as the activation cost instead of lunar coins");
         ReplaceLunarSeerCost = config.Bind("Costs", "Lunar Seer uses white items", defaultConfig.ReplaceLunarSeerCost, "Lunar Seer (dream) uses white items as the activation cost instead of lunar coins");
+        ReplaceLunarPodCost = config.Bind("Costs", "Lunar pods uses white items", defaultConfig.ReplaceLunarPodCost, "Lunar pods uses white items as the activation cost instead of lunar coins");
+        ReplaceLunarBudCost = config.Bind("Costs", "Lunar buds uses white items", defaultConfig.ReplaceLunarBudCost, "Lunar buds uses white items as the activation cost instead of lunar coins");
+        ReplaceSlabCost = config.Bind("Costs", "Slab uses white items", defaultConfig.ReplaceSlabCost, "The Slab in the Bazaar Between Time uses white items as the activation cost instead of lunar coins");
+        ReplaceMageCost = config.Bind("Costs", "Unlocking artificier uses white items", defaultConfig.ReplaceMageCost, "Unlocking artificier uses white items as the activation cost instead of lunar coins");
+        ReplaceFrogCost = config.Bind("Costs", "Petting the frog uses white items", defaultConfig.ReplaceFrogCost, "Petting the frog uses white items as the activation cost instead of lunar coins");
+        ReplaceShrineOfOrderCost = config.Bind("Costs", "Shrine of order uses white items", defaultConfig.ReplaceShrineOfOrderCost, "Shrine of order uses white items as the activation cost instead of lunar coins");
 
         ReplaceDoppelgangerDropTable = config.Bind("Artifacts", "Relentless Doppelganger", defaultConfig.ReplaceDoppelgangerDropTable, "The Relentless Doppelganger from the Artifact of Vengeance will drop scrap instead of items");
         ReplaceSacrificeArtifactDropTable = config.Bind("Artifacts", "Artifact of Sacrifice", defaultConfig.ReplaceSacrificeArtifactDropTable, "When using the Artifact of Sacrifice, mobs will drop scrap instead of items");
@@ -217,6 +228,12 @@ internal class Configuration
 
         ModSettingsManager.AddOption(new CheckBoxOption(ReplaceNewtAltarsCost));
         ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLunarSeerCost));
+        ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLunarPodCost));
+        ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLunarBudCost));
+        ModSettingsManager.AddOption(new CheckBoxOption(ReplaceSlabCost));
+        ModSettingsManager.AddOption(new CheckBoxOption(ReplaceMageCost));
+        ModSettingsManager.AddOption(new CheckBoxOption(ReplaceFrogCost));
+        ModSettingsManager.AddOption(new CheckBoxOption(ReplaceShrineOfOrderCost));
 
         ModSettingsManager.AddOption(new CheckBoxOption(ReplaceDoppelgangerDropTable));
         ModSettingsManager.AddOption(new CheckBoxOption(ReplaceSacrificeArtifactDropTable));
@@ -290,6 +307,12 @@ internal class Configuration
         yield return (ReplaceElderLemurianDropTable, preset.ReplaceElderLemurianDropTable);
         yield return (ReplaceNewtAltarsCost, preset.ReplaceNewtAltarsCost);
         yield return (ReplaceLunarSeerCost, preset.ReplaceLunarSeerCost);
+        yield return (ReplaceLunarPodCost, preset.ReplaceLunarPodCost);
+        yield return (ReplaceLunarBudCost, preset.ReplaceLunarBudCost);
+        yield return (ReplaceSlabCost, preset.ReplaceSlabCost);
+        yield return (ReplaceMageCost, preset.ReplaceMageCost);
+        yield return (ReplaceFrogCost, preset.ReplaceFrogCost);
+        yield return (ReplaceShrineOfOrderCost, preset.ReplaceShrineOfOrderCost);
         yield return (ReplaceDoppelgangerDropTable, preset.ReplaceDoppelgangerDropTable);
         yield return (ReplaceSacrificeArtifactDropTable, preset.ReplaceSacrificeArtifactDropTable);
         yield return (ReplaceSimulacrumOrbDropTable, preset.ReplaceSimulacrumOrbDropTable);

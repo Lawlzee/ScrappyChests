@@ -10,6 +10,7 @@ public enum ConfigPresetMoniker
     Hardcore,
     V1,
     V1_1,
+    V1_2,
     Vanilla,
     Custom
 }
@@ -32,7 +33,12 @@ public record ConfigPreset
         ReplaceBossDropTable = false,
         ReplaceAWUDropTable = false,
         ReplaceNewtAltarsCost = false,
-        ReplaceLunarSeerCost = false
+        ReplaceLunarSeerCost = false,
+        ReplaceLunarPodCost = false,
+        ReplaceLunarBudCost = false,
+        ReplaceSlabCost = false,
+        ReplaceMageCost = false,
+        ReplaceFrogCost = false
     };
 
     public static readonly ConfigPreset AllTheChoices = new ConfigPreset
@@ -83,7 +89,20 @@ public record ConfigPreset
         ReplaceCrashedMultishopDropTable = true,
         ReplaceBossHunterDropTable = true,
         ReplaceScavengerDropTable = true,
-        ReplaceElderLemurianDropTable = true
+        ReplaceElderLemurianDropTable = true,
+        ReplaceShrineOfOrderCost = true
+    };
+
+    public static readonly ConfigPreset V1_2 = new ConfigPreset
+    {
+        Moniker = ConfigPresetMoniker.V1_2,
+        MinimumStageForRedPrinters = 5,
+        AddWhiteCauldronToBazaar = false,
+        ReplaceLunarPodCost = false,
+        ReplaceLunarBudCost = false,
+        ReplaceSlabCost = false,
+        ReplaceMageCost = false,
+        ReplaceFrogCost = false
     };
 
     public static readonly ConfigPreset V1_1 = new ConfigPreset
@@ -99,7 +118,12 @@ public record ConfigPreset
         MinimumStageForRedPrinters = 5,
         ReplaceNewtAltarsCost = false,
         ReplaceLunarSeerCost = false,
-        AddWhiteCauldronToBazaar = false
+        AddWhiteCauldronToBazaar = false,
+        ReplaceLunarPodCost = false,
+        ReplaceLunarBudCost = false,
+        ReplaceSlabCost = false,
+        ReplaceMageCost = false,
+        ReplaceFrogCost = false
     };
 
     public static readonly ConfigPreset V1 = new ConfigPreset
@@ -119,7 +143,12 @@ public record ConfigPreset
         ReplaceLunarSeerCost = false,
         SpeedItemSpawnMultiplier = 1.0f,
         ReplaceVoidCradleDropTable = false,
-        AddWhiteCauldronToBazaar = false
+        AddWhiteCauldronToBazaar = false,
+        ReplaceLunarPodCost = false,
+        ReplaceLunarBudCost = false,
+        ReplaceSlabCost = false,
+        ReplaceMageCost = false,
+        ReplaceFrogCost = false
     };
 
     public static readonly ConfigPreset Vanilla = new ConfigPreset
@@ -156,6 +185,11 @@ public record ConfigPreset
         ReplaceElderLemurianDropTable = false,
         ReplaceNewtAltarsCost = false,
         ReplaceLunarSeerCost = false,
+        ReplaceLunarPodCost = false,
+        ReplaceLunarBudCost = false,
+        ReplaceSlabCost = false,
+        ReplaceMageCost = false,
+        ReplaceFrogCost = false,
         ReplaceDoppelgangerDropTable = false,
         ReplaceSacrificeArtifactDropTable = false,
         ReplaceSimulacrumOrbDropTable = false,
@@ -177,6 +211,7 @@ public record ConfigPreset
         DefaultPrinterSpawnRate,
         NoPrinters,
         Hardcore,
+        V1_2,
         V1_1,
         V1,
         Vanilla
@@ -229,6 +264,12 @@ public record ConfigPreset
 
     public bool ReplaceNewtAltarsCost { get; init; } = true;
     public bool ReplaceLunarSeerCost { get; init; } = true;
+    public bool ReplaceLunarPodCost { get; init; } = true;
+    public bool ReplaceLunarBudCost { get; init; } = true;
+    public bool ReplaceSlabCost { get; init; } = true;
+    public bool ReplaceMageCost { get; init; } = true;
+    public bool ReplaceFrogCost { get; init; } = true;
+    public bool ReplaceShrineOfOrderCost { get; init; } = false;
 
     public bool ReplaceDoppelgangerDropTable { get; init; } = false;
     public bool ReplaceSacrificeArtifactDropTable { get; init; } = true;

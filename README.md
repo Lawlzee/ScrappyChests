@@ -45,6 +45,7 @@ Each replacement rules can be configured in the game menu `Settings > Mod Option
 | Green printer spawn multiplier | 2.5x | Controls the spawn rate of green printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers. |
 | Red printer spawn multiplier | 3x | Controls the spawn rate of red printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers. |
 | Yellow printer spawn multiplier | 3x | Controls the spawn rate of yellow printers. 0.0x = never. 1.0x = default spawn rate. 2.0x = 2 times more likely to spawn printers. |
+| Minimum stage for red printers to spawn | 2 | Minimum stage for red printers to spawn. The vanilla value is 5. |
 | Add void items to Printers | Enabled | Add void items to Printers |
 | Add void printers to void seeds | Enabled | Add void printers to void seeds |
 | Void seeds void printers weigth | 0.2 | Void seeds void printers weigth |
@@ -64,8 +65,6 @@ Each replacement rules can be configured in the game menu `Settings > Mod Option
 | Add yellow Cauldrons to the Bazaar | Enabled | Add yellow Cauldrons to the Bazaar |
 | Add yellow Cauldrons to the Moon | Enabled | Add a yellow Cauldrons to the Moon |
 | Yellow Cauldrons Cost | 2 white items, 1 green item, 1 yellow item |  Cost to use the yellow Cauldrons |
-
-
 
 ### Items rules
 
@@ -92,6 +91,12 @@ Each replacement rules can be configured in the game menu `Settings > Mod Option
 | --- | --- | --- |
 | Newt Altars uses white items | Enabled | Newt Altar uses white items as the activation cost instead of lunar coins |
 | Lunar Seer uses white items | Enabled | Lunar Seer (dream) uses white items as the activation cost instead of lunar coins |
+| Lunar pods uses white items | Enabled | Lunar pods uses white items as the activation cost instead of lunar coins |
+| Lunar buds uses white items | Enabled | Lunar buds uses white items as the activation cost instead of lunar coins |
+| Slab uses white items | Enabled | The Slab in the Bazaar Between Time uses white items as the activation cost instead of lunar coins |
+| Unlocking artificier uses white items | Enabled | Unlocking artificier uses white items as the activation cost instead of lunar coins |
+| Petting the frog uses white items | Enabled | Petting the frog uses white items as the activation cost instead of lunar coins |
+| Shrine of order uses white items | Disabled | Shrine of order uses white items as the activation cost instead of lunar coins |
 
 ### Artifacts rules
 

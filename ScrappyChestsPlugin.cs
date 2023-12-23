@@ -22,6 +22,10 @@ namespace ScrappyChests
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     public class ScrappyChestsPlugin : BaseUnityPlugin
     {
+        //todos:
+        //slab reset
+        //free chests
+
         public const string PluginGUID = "Lawlzee.ScrappyChests";
         public const string PluginAuthor = "Lawlzee";
         public const string PluginName = "Scrappy Chests";
@@ -412,7 +416,7 @@ namespace ScrappyChests
             if (self.pingTarget)
             {
                 PurchaseInteraction purchaseInteraction = self.pingTarget.GetComponent<PurchaseInteraction>();
-                if (purchaseInteraction?.displayNameToken == "NEWT_STATUE_NAME" || purchaseInteraction?.displayNameToken == "BAZAAR_SEER_NAME")
+                if (purchaseInteraction)
                 {
                     ReplacePurchaseInteraction(purchaseInteraction, () => { orig(self); return true; });
                     return;
@@ -424,9 +428,22 @@ namespace ScrappyChests
 
         private T ReplacePurchaseInteraction<T>(PurchaseInteraction self, Func<T> orig)
         {
+            //LUNAR_CHEST_NAME: Lunar Pod
+            //LUNAR_REROLL_NAME: Slab
+            //LUNAR_TERMINAL_NAME: Lunar Bud
+            //LOCKEDMAGE_NAME: Free the survivor (artificer unlock)
+            //FROG_NAME: Frog
+            //SHRINE_RESTACK_NAME: Shrine of Order
+            //BAZAAR_BLUEPRINT_NAME: Junk
             if (_config.ModEnabled.Value
                 && ((_config.ReplaceNewtAltarsCost.Value && self.displayNameToken == "NEWT_STATUE_NAME")
-                    || (_config.ReplaceLunarSeerCost.Value && self.displayNameToken == "BAZAAR_SEER_NAME")))
+                    || (_config.ReplaceLunarSeerCost.Value && self.displayNameToken == "BAZAAR_SEER_NAME")
+                    || (_config.ReplaceLunarPodCost.Value && self.displayNameToken == "LUNAR_CHEST_NAME")
+                    || (_config.ReplaceSlabCost.Value && self.displayNameToken == "LUNAR_REROLL_NAME")
+                    || (_config.ReplaceLunarBudCost.Value && self.displayNameToken == "LUNAR_TERMINAL_NAME")
+                    || (_config.ReplaceMageCost.Value && self.displayNameToken == "LOCKEDMAGE_NAME")
+                    || (_config.ReplaceFrogCost.Value && self.displayNameToken == "FROG_NAME")
+                    || (_config.ReplaceShrineOfOrderCost.Value && self.displayNameToken == "SHRINE_RESTACK_NAME")))
             {
                 var oldCostType = self.costType;
                 using var disposable = new Disposable(() => self.costType = oldCostType);
