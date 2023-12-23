@@ -90,7 +90,8 @@ public record ConfigPreset
         ReplaceBossHunterDropTable = true,
         ReplaceScavengerDropTable = true,
         ReplaceElderLemurianDropTable = true,
-        ReplaceShrineOfOrderCost = true
+        ReplaceShrineOfOrderCost = true,
+        ReplaceLunarCoinDrops = false
     };
 
     public static readonly ConfigPreset V1_2 = new ConfigPreset
@@ -102,7 +103,8 @@ public record ConfigPreset
         ReplaceLunarBudCost = false,
         ReplaceSlabCost = false,
         ReplaceMageCost = false,
-        ReplaceFrogCost = false
+        ReplaceFrogCost = false,
+        ReplaceLunarCoinDrops = false
     };
 
     public static readonly ConfigPreset V1_1 = new ConfigPreset
@@ -123,7 +125,8 @@ public record ConfigPreset
         ReplaceLunarBudCost = false,
         ReplaceSlabCost = false,
         ReplaceMageCost = false,
-        ReplaceFrogCost = false
+        ReplaceFrogCost = false,
+        ReplaceLunarCoinDrops = false
     };
 
     public static readonly ConfigPreset V1 = new ConfigPreset
@@ -148,7 +151,8 @@ public record ConfigPreset
         ReplaceLunarBudCost = false,
         ReplaceSlabCost = false,
         ReplaceMageCost = false,
-        ReplaceFrogCost = false
+        ReplaceFrogCost = false,
+        ReplaceLunarCoinDrops = false
     };
 
     public static readonly ConfigPreset Vanilla = new ConfigPreset
@@ -183,6 +187,7 @@ public record ConfigPreset
         ReplaceAWUDropTable = false,
         ReplaceScavengerDropTable = false,
         ReplaceElderLemurianDropTable = false,
+        ReplaceLunarCoinDrops = false,
         ReplaceNewtAltarsCost = false,
         ReplaceLunarSeerCost = false,
         ReplaceLunarPodCost = false,
@@ -261,6 +266,7 @@ public record ConfigPreset
     public bool ReplaceAWUDropTable { get; init; } = true;
     public bool ReplaceScavengerDropTable { get; init; } = false;
     public bool ReplaceElderLemurianDropTable { get; init; } = false;
+    public bool ReplaceLunarCoinDrops { get; init; } = true;
 
     public bool ReplaceNewtAltarsCost { get; init; } = true;
     public bool ReplaceLunarSeerCost { get; init; } = true;

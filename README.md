@@ -84,6 +84,7 @@ Each replacement rules can be configured in the game menu `Settings > Mod Option
 | Alloy Worship Unit | Enabled | Alloy Worship Unit will drop scrap instead of items |
 | Scavenger | Disabled | Scavenger will drop scrap instead of items |
 | Elite Elder Lemurian | Disabled | The Elite Elder Lemurian in the hidden chamber of Abandoned Aqueduct will drop scrap instead of bands |
+| Lunar coins drops | Enabled | Mobs will drop white scrap instead of Lunar coins |
 
 ### Costs rules
 

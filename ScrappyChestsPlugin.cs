@@ -54,6 +54,7 @@ namespace ScrappyChests
 
             On.RoR2.CampDirector.GenerateInteractableCardSelection += CampDirector_GenerateInteractableCardSelection;
             On.RoR2.DirectorCore.TrySpawnObject += DirectorCore_TrySpawnObject;
+            On.RoR2.DirectorCard.IsAvailable += DirectorCard_IsAvailable;
 
             On.RoR2.EquipmentSlot.FireBossHunter += EquipmentSlot_FireBossHunter;
 
@@ -80,7 +81,7 @@ namespace ScrappyChests
 
             On.RoR2.SceneObjectToggleGroup.Awake += SceneObjectToggleGroup_Awake;
 
-            On.RoR2.DirectorCard.IsAvailable += DirectorCard_IsAvailable;
+            On.RoR2.PlayerCharacterMasterController.Init += PlayerCharacterMasterController_Init;
 
             _yellowSoupCostTypeDef = new CostTypeDef()
             {
@@ -166,6 +167,37 @@ namespace ScrappyChests
                 },
                 colorIndex = ColorCatalog.ColorIndex.BossItem,
                 itemTier = ItemTier.Boss
+            };
+        }
+
+        private void PlayerCharacterMasterController_Init(On.RoR2.PlayerCharacterMasterController.orig_Init orig)
+        {
+            //Copy of the code
+            GlobalEventManager.onCharacterDeathGlobal += damageReport =>
+            {
+                CharacterMaster characterMaster = damageReport.attackerMaster;
+                if (!characterMaster)
+                {
+                    return;
+                }
+
+                if (characterMaster.minionOwnership.ownerMaster)
+                {
+                    characterMaster = characterMaster.minionOwnership.ownerMaster;
+                }
+
+                PlayerCharacterMasterController component = characterMaster.GetComponent<PlayerCharacterMasterController>();
+                if (!component || !Util.CheckRoll(1f * component.lunarCoinChanceMultiplier))
+                {
+                    return;
+                }
+
+                PickupIndex pickupIndex = _config.ModEnabled.Value && _config.ReplaceLunarCoinDrops.Value
+                    ? PickupCatalog.FindPickupIndex(RoR2Content.Items.ScrapWhite.itemIndex)
+                    : PickupCatalog.FindPickupIndex(RoR2Content.MiscPickups.LunarCoin.miscPickupIndex);
+
+                PickupDropletController.CreatePickupDroplet(pickupIndex, damageReport.victim.transform.position, Vector3.up * 10f);
+                component.lunarCoinChanceMultiplier *= 0.5f;
             };
         }
 

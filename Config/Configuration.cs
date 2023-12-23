@@ -60,6 +60,7 @@ internal class Configuration
     public ConfigEntry<bool> ReplaceAWUDropTable { get; }
     public ConfigEntry<bool> ReplaceScavengerDropTable { get; }
     public ConfigEntry<bool> ReplaceElderLemurianDropTable { get; }
+    public ConfigEntry<bool> ReplaceLunarCoinDrops { get; }
 
     public ConfigEntry<bool> ReplaceNewtAltarsCost { get; }
     public ConfigEntry<bool> ReplaceLunarSeerCost { get; }
@@ -145,6 +146,7 @@ internal class Configuration
         ReplaceAWUDropTable = config.Bind("Mobs", "Alloy Worship Unit", defaultConfig.ReplaceAWUDropTable, "Alloy Worship Unit will drop scrap instead of items");
         ReplaceScavengerDropTable = config.Bind("Mobs", "Scavenger", defaultConfig.ReplaceScavengerDropTable, "Scavenger will drop scrap instead of items");
         ReplaceElderLemurianDropTable = config.Bind("Mobs", "Elite Elder Lemurian", defaultConfig.ReplaceElderLemurianDropTable, "The Elite Elder Lemurian in the hidden chamber of Abandoned Aqueduct will drop scrap instead of bands");
+        ReplaceLunarCoinDrops = config.Bind("Mobs", "Lunar coins drops", defaultConfig.ReplaceLunarCoinDrops, "Mobs will drop white scrap instead of Lunar coins");
 
         ReplaceNewtAltarsCost = config.Bind("Costs", "Newt Altars uses white items", defaultConfig.ReplaceNewtAltarsCost, "Newt Altar uses white items as the activation cost instead of lunar coins");
         ReplaceLunarSeerCost = config.Bind("Costs", "Lunar Seer uses white items", defaultConfig.ReplaceLunarSeerCost, "Lunar Seer (dream) uses white items as the activation cost instead of lunar coins");
@@ -225,6 +227,7 @@ internal class Configuration
         ModSettingsManager.AddOption(new CheckBoxOption(ReplaceAWUDropTable));
         ModSettingsManager.AddOption(new CheckBoxOption(ReplaceScavengerDropTable));
         ModSettingsManager.AddOption(new CheckBoxOption(ReplaceElderLemurianDropTable));
+        ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLunarCoinDrops));
 
         ModSettingsManager.AddOption(new CheckBoxOption(ReplaceNewtAltarsCost));
         ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLunarSeerCost));
@@ -305,6 +308,7 @@ internal class Configuration
         yield return (ReplaceAWUDropTable, preset.ReplaceAWUDropTable);
         yield return (ReplaceScavengerDropTable, preset.ReplaceScavengerDropTable);
         yield return (ReplaceElderLemurianDropTable, preset.ReplaceElderLemurianDropTable);
+        yield return (ReplaceLunarCoinDrops, preset.ReplaceLunarCoinDrops);
         yield return (ReplaceNewtAltarsCost, preset.ReplaceNewtAltarsCost);
         yield return (ReplaceLunarSeerCost, preset.ReplaceLunarSeerCost);
         yield return (ReplaceLunarPodCost, preset.ReplaceLunarPodCost);
