@@ -16,6 +16,9 @@ internal class Configuration
 {
     public static Configuration Instance { get; set; }
 
+    private bool _presetIsChanging;
+    private bool _settingIsChanging;
+
     public ConfigEntry<bool> ModEnabled { get; }
     public ConfigEntry<ConfigPresetMoniker> Preset { get; }
     public PresetChoiceOption PresetChoiceOption { get; }
@@ -92,7 +95,7 @@ internal class Configuration
 
     public Configuration(ConfigFile config)
     {
-        var defaultConfig = ConfigPreset.Default;
+        var defaultConfig = ConfigPresets.Default;
         ModEnabled = config.Bind("Configuration", "Mod enabled", true, "Mod enabled");
         Preset = config.Bind("Configuration", "Preset", ConfigPresetMoniker.Default, "todo");
         PresetChoiceOption = new PresetChoiceOption(Preset);
@@ -180,7 +183,7 @@ internal class Configuration
 
         Preset.SettingChanged += OnPresetChanged;
 
-        foreach ((ConfigEntryBase c, object presetValue) in GetAllConfigs(ConfigPreset.Default))
+        foreach ((ConfigEntryBase c, object presetValue) in GetAllConfigs(ConfigPresets.Default))
         {
             c.AddSettingChanged(OnSettingChanged);
         }
@@ -337,8 +340,17 @@ internal class Configuration
 
     private void OnSettingChanged(object sender, EventArgs e)
     {
+        if (_presetIsChanging)
+        {
+            return;
+        }
+
+        _settingIsChanging = true;
+
         var preset = GetCurrentPreset();
         Preset.Value = preset;
+
+        _settingIsChanging = false;
     }
 
     private IEnumerable<(ConfigEntryBase Config, object PresetValue)> GetAllConfigs(ConfigPreset preset)
@@ -405,7 +417,7 @@ internal class Configuration
 
     public ConfigPresetMoniker GetCurrentPreset()
     {
-        foreach (var preset in ConfigPreset.AllPresets)
+        foreach (var preset in ConfigPresets.All)
         {
             bool match = GetAllConfigs(preset)
                 .All(x => EqualityComparer<object>.Default.Equals(x.Config.BoxedValue, x.PresetValue));
@@ -421,21 +433,23 @@ internal class Configuration
 
     private void OnPresetChanged(object sender, EventArgs e)
     {
-        PresetChoiceOption.GetConfig().description = Preset.Value.ToString();
-
         if (Preset.Value == ConfigPresetMoniker.Custom)
         {
+            PresetChoiceOption.UpdateDescription(ConfigPresetDescriptions.Custom, !_settingIsChanging);
             return;
         }
 
-        ConfigPreset preset = ConfigPreset.AllPresets
+        ConfigPreset preset = ConfigPresets.All
             .First(x => x.Moniker == Preset.Value);
 
+        PresetChoiceOption.UpdateDescription(preset.Description, !_settingIsChanging);
+
+        _presetIsChanging = true;
         foreach ((ConfigEntryBase config, object presetValue) in GetAllConfigs(preset))
         {
             config.BoxedValue = presetValue;
         }
 
-        PresetChoiceOption.UpdateDescription(preset.Moniker.ToString());
+        _presetIsChanging = false;
     }
 }

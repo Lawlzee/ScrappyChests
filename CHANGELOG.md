@@ -3,6 +3,8 @@
 - Every interactable that previously cost Lunar coins now costs white items (configurable)
 - Replaced Lunar coins drops to white scrap (configurable)
 - todo: scrap icon description + config
+- todo: presets
+- New mod icon
 
 ## 1.2.2
 - Fixed a bug where additional printers would spawn at coordinates (0, 0, 0) when void seeds were present on the map.
