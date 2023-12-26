@@ -14,6 +14,8 @@ namespace ScrappyChests;
 
 internal class Configuration
 {
+    public static Configuration Instance { get; set; }
+
     public ConfigEntry<bool> ModEnabled { get; }
     public ConfigEntry<ConfigPresetMoniker> Preset { get; }
     public PresetChoiceOption PresetChoiceOption { get; }
@@ -48,7 +50,7 @@ internal class Configuration
     public ConfigEntry<bool> AddWhiteCauldronToBazaar { get; }
     public ConfigEntry<bool> AddYellowCauldronToBazaar { get; }
     public ConfigEntry<bool> AddYellowCauldronToMoon { get; }
-    public ConfigEntry<string> YellowCauldronCost { get; }
+    public ConfigEntry<string> _yellowCauldronCost { get; }
 
     public ConfigEntry<bool> ReplaceLockboxDropTable { get; }
     public ConfigEntry<bool> ReplaceEncrustedCacheDropTable { get; }
@@ -85,6 +87,8 @@ internal class Configuration
     public ConfigEntry<bool> ReplaceVoidTier1Items { get; }
     public ConfigEntry<bool> ReplaceVoidTier2Items { get; }
     public ConfigEntry<bool> ReplaceVoidTier3Items { get; }
+
+    public ConfigEntry<string> _maxCompletedEclipseLevels { get; }
 
     public Configuration(ConfigFile config)
     {
@@ -123,7 +127,7 @@ internal class Configuration
         AddWhiteCauldronToBazaar = config.Bind("Cauldrons", "Add white Cauldrons to the Bazaar", defaultConfig.AddWhiteCauldronToBazaar, "Add a white Cauldrons to the Bazaar");
         AddYellowCauldronToBazaar = config.Bind("Cauldrons", "Add yellow Cauldrons to the Bazaar", defaultConfig.AddYellowCauldronToBazaar, "Add a yellow Cauldrons to the Bazaar");
         AddYellowCauldronToMoon = config.Bind("Cauldrons", "Add yellow Cauldrons to the Moon", defaultConfig.AddYellowCauldronToMoon, "Add a yellow Cauldrons to the Moon");
-        YellowCauldronCost = config.Bind("Cauldrons", "Yellow Cauldrons Cost", defaultConfig.YellowCauldronCost, """
+        _yellowCauldronCost = config.Bind("Cauldrons", "Yellow Cauldrons Cost", defaultConfig.YellowCauldronCost, """
                 Cost to use the yellow Cauldrons
                 
                 w: white
@@ -172,6 +176,8 @@ internal class Configuration
         ReplaceVoidTier2Items = config.Bind("Tiers", "Void tier 2 item", defaultConfig.ReplaceVoidTier2Items, "Replace void tier 2 drops with green scrap");
         ReplaceVoidTier3Items = config.Bind("Tiers", "Void tier 3 item", defaultConfig.ReplaceVoidTier3Items, "Replace void tier 3 drops with red scrap");
 
+        _maxCompletedEclipseLevels = config.Bind("Eclipse", "Max completed Eclipse levels", "Commando=0,Huntress=0,Bandit2=0,Toolbot=0,Engi=0,Mage=0,Merc=0,Treebot=0,Loader=0,Croco=0,Captain=0,Heretic=0,Railgunner=0,VoidSurvivor=0", "Max eclipse level per survivor reached with Scappy Chests enabled");
+
         Preset.SettingChanged += OnPresetChanged;
 
         foreach ((ConfigEntryBase c, object presetValue) in GetAllConfigs(ConfigPreset.Default))
@@ -215,7 +221,7 @@ internal class Configuration
         ModSettingsManager.AddOption(new CheckBoxOption(AddWhiteCauldronToBazaar));
         ModSettingsManager.AddOption(new CheckBoxOption(AddYellowCauldronToBazaar));
         ModSettingsManager.AddOption(new CheckBoxOption(AddYellowCauldronToMoon));
-        ModSettingsManager.AddOption(new StringInputFieldOption(YellowCauldronCost));
+        ModSettingsManager.AddOption(new StringInputFieldOption(_yellowCauldronCost));
 
         ModSettingsManager.AddOption(new CheckBoxOption(ReplaceLockboxDropTable));
         ModSettingsManager.AddOption(new CheckBoxOption(ReplaceEncrustedCacheDropTable));
@@ -253,6 +259,8 @@ internal class Configuration
         ModSettingsManager.AddOption(new CheckBoxOption(ReplaceVoidTier2Items));
         ModSettingsManager.AddOption(new CheckBoxOption(ReplaceVoidTier3Items));
 
+        ModSettingsManager.AddOption(new StringInputFieldOption(_maxCompletedEclipseLevels));
+
         ModSettingsManager.SetModIcon(LoadIconSprite());
 
         Sprite LoadIconSprite()
@@ -260,6 +268,70 @@ internal class Configuration
             Texture2D texture = new Texture2D(2, 2);
             texture.LoadImage(File.ReadAllBytes(Path.Combine(Path.GetDirectoryName(info.Location), "icon.png")));
             return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+        }
+    }
+
+    public (int White, int Green, int Red, int Yellow) YellowCauldronCost
+    {
+        get
+        {
+            int white = 0;
+            int green = 0;
+            int red = 0;
+            int yellow = 0;
+
+            foreach (char c in _yellowCauldronCost.Value)
+            {
+                switch (c)
+                {
+                    case 'w':
+                    case 'W':
+                        white++;
+                        break;
+                    case 'g':
+                    case 'G':
+                        green++;
+                        break;
+                    case 'r':
+                    case 'R':
+                        red++;
+                        break;
+                    case 'y':
+                    case 'Y':
+                        yellow++;
+                        break;
+                }
+            }
+
+            return (white, green, red, yellow);
+        }
+    }
+
+    public Dictionary<string, int> MaxCompletedEclipseLevels
+    {
+        get
+        {
+            Dictionary<string, int> result = new Dictionary<string, int>();
+
+            string[] configs = _maxCompletedEclipseLevels.Value.Split(',');
+            foreach (string config in configs)
+            {
+                string[] parts = config.Split('=');
+                if (parts.Length == 2 && int.TryParse(parts[1], out int level))
+                {
+                    result[parts[0]] = level;
+                }
+            }
+
+            return result;
+        }
+        set
+        {
+            _maxCompletedEclipseLevels.Value = string.Join(
+                ",", 
+                value
+                    .OrderBy(x => x.Key)
+                    .Select(x => $"{x.Key}={x.Value}"));
         }
     }
 
@@ -298,7 +370,7 @@ internal class Configuration
         yield return (AddWhiteCauldronToBazaar, preset.AddWhiteCauldronToBazaar);
         yield return (AddYellowCauldronToBazaar, preset.AddYellowCauldronToBazaar);
         yield return (AddYellowCauldronToMoon, preset.AddYellowCauldronToMoon);
-        yield return (YellowCauldronCost, preset.YellowCauldronCost);
+        yield return (_yellowCauldronCost, preset.YellowCauldronCost);
         yield return (ReplaceLockboxDropTable, preset.ReplaceLockboxDropTable);
         yield return (ReplaceEncrustedCacheDropTable, preset.ReplaceEncrustedCacheDropTable);
         yield return (ReplaceCrashedMultishopDropTable, preset.ReplaceCrashedMultishopDropTable);
