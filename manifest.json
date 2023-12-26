@@ -3,7 +3,7 @@
   "version_number": "1.3.0",
   "website_url": "https://github.com/Lawlzee/ScrappyChests",
   "displayName": "Scrappy Chests",
-  "description": "ScrappyChests is a gamemode where the loot from chests and mobs is substituted with scrap rather than standard items, requiring players to utilize printers and cauldrons to obtain standard items. Each replacement rules can be configured in the game menu (50+ configs).",
+  "description": "ScrappyChests is a gamemode where the loot from chests and mobs is substituted with scrap rather than standard items, requiring players to utilize printers and cauldrons to obtain standard items. Each replacement rules can be configured in the game menu.",
   "dependencies": [
     "bbepis-BepInExPack-5.4.2108",
     "RiskofThunder-HookGenPatcher-1.2.3",
