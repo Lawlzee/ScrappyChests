@@ -1,9 +1,11 @@
 ## 1.3
+- Added configuration presets
 - Changed the minimum stage count for red printers to spawn from 5 to 2 (configurable)
 - Every interactable that previously cost Lunar coins now costs white items (configurable)
-- Replaced Lunar coins drops to white scrap (configurable)
-- todo: scrap icon description + config
-- todo: presets
+- Replaced Lunar coin drops to white scrap (configurable)
+- Added a visual indicator of the highest eclipse level completed for each character with the mod enabled on the character select screen.
+- The difficulty icons now contain a scrap icon when the mod is enabled.
+- Fixes a bug where all 3 yellow cauldrons would always spawn on the moon.
 - New mod icon
 
 ## 1.2.2

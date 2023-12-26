@@ -97,7 +97,7 @@ internal class Configuration
     {
         var defaultConfig = ConfigPresets.Default;
         ModEnabled = config.Bind("Configuration", "Mod enabled", true, "Mod enabled");
-        Preset = config.Bind("Configuration", "Preset", ConfigPresetMoniker.Default, "todo");
+        Preset = config.Bind("Configuration", "Preset", ConfigPresetMoniker.Default, "Configuration preset");
         PresetChoiceOption = new PresetChoiceOption(Preset);
 
         ReplaceChestDropTable = config.Bind("Chests", "Chest", defaultConfig.ReplaceChestDropTable, "Chests will drop scrap instead of items");

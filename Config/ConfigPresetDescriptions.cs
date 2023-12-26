@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ScrappyChests;
+﻿namespace ScrappyChests;
 
 public static class ConfigPresetDescriptions
 {
 
     public static readonly string Default = """
         Default configuration for the mod:
-        - Interactables and monsters drops scrap instead of items
+        - Interactables and monsters drop scrap instead of items
         - Bonus printer spawn rate
         - Void items can be found in printers and cauldrons
-        - Extra white and yellow cauldons in the Bazaar and on the moon
+        - Extra white and yellow cauldrons in the Bazaar and on the moon
         - Interactables that costs lunar coins, cost white items instead
         """;
 
@@ -45,11 +41,11 @@ public static class ConfigPresetDescriptions
 
     public static readonly string Hardcore = """
         Default configuration except:
-        - Every chests and ennemies drops scrap
+        - Every chests and enemies drops scrap
         - Default printers spawn rate
         - No void printers in void seeds
         - No extra cauldrons
-        - No speed items bonus
+        - No speed item bonus
         """;
 
 

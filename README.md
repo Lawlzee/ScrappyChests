@@ -22,6 +22,73 @@ Each replacement rules can be configured in the game menu `Settings > Mod Option
 | Name | Default Value | Description |
 | --- | --- | --- |
 | Mod enabled | Enabled | Mod enabled |
+| Preset | Default | See [Configuration presets](#configuration-presets) |
+
+#### Configuration presets
+Scrappy chests contains the following configuration presets:
+
+##### Default
+Default configuration for the mod:
+- Interactables and monsters drop scrap instead of items
+- Bonus printer spawn rate
+- Void items can be found in printers and cauldrons
+- Extra white and yellow cauldrons in the Bazaar and on the moon
+- Interactables that costs lunar coins, cost white items instead
+
+##### Easy
+Default configuration except:
+- Adaptive chests, legendary chests, void potential, void cradles and bosses drop items
+- Lunar interactables cost lunar coins
+- Red items are never replaced with scrap
+
+##### All the choices
+Default configuration except:
+- Multishops, adaptive chests and void potentials drop items
+
+##### Default printer spawn rates
+Default configuration except:
+- Default printer spawn rate
+
+##### No printers
+Default configuration except:
+- Printers are disabled
+
+#### Hardcore
+Default configuration except:
+- Every chests and enemies drops scrap
+- Default printers spawn rate
+- No void printers in void seeds
+- No extra cauldrons
+- No speed item bonus
+
+#### V1
+Equivalent to the 1.0 version of the mod.
+
+Default configuration except:
+- Default printers spawn rate
+- No void printers in void seeds
+- No extra cauldrons
+- No void items in printers and cauldrons
+- No speed items bonus
+- Lunar interactables cost lunar coins
+- Void cradles drops void items
+
+#### V1.1
+Equivalent to the 1.1 version of the mod.
+        
+Default configuration except:
+- No void printers in void seeds
+- No extra cauldrons
+- Lunar interactables cost lunar coins
+
+#### V1.2
+Equivalent to the 1.2 version of the mod.
+        
+Default configuration except:
+- Lunar interactables cost lunar coins (newt altars and lunar seers) 
+
+#### Vanilla
+Every changes are disabled.
 
 ### Chests rules
 
@@ -125,3 +192,8 @@ Each replacement rules can be configured in the game menu `Settings > Mod Option
 | Void tier 1 item | Enabled | Replace void tier 1 drops with white scrap |
 | Void tier 2 item | Enabled | Replace void tier 2 drops with green scrap |
 | Void tier 3 item | Enabled | Replace void tier 3 drops with red scrap |
+
+### Eclipse
+| Name | Default Value | Description |
+| --- | --- | --- |
+| Max completed Eclipse levels | 0 for all characters | Max eclipse level per survivor reached with Scappy Chests enabled |
